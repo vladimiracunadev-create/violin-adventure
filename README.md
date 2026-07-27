@@ -1,10 +1,37 @@
+<div align="center">
+
 # 🎻 Mi Aventura con el Violín
 
-Aplicación educativa, privada y multiplataforma para acompañar a una niña de 10 años en sus primeros pasos con el violín.
+**Aplicación educativa, privada y sin publicidad para aprender violín desde los 10 años.**
 
-La versión **1.0.0** funciona como aplicación web instalable y comparte la misma base de código para Windows, Android, iOS, Linux y macOS mediante Tauri 2.
+[![Release](https://img.shields.io/github/v/release/vladimiracunadev-create/violin-adventure?label=versi%C3%B3n&color=6d4aff)](https://github.com/vladimiracunadev-create/violin-adventure/releases/latest)
+[![CI](https://github.com/vladimiracunadev-create/violin-adventure/actions/workflows/ci.yml/badge.svg)](https://github.com/vladimiracunadev-create/violin-adventure/actions/workflows/ci.yml)
+[![Release multiplataforma](https://github.com/vladimiracunadev-create/violin-adventure/actions/workflows/release.yml/badge.svg)](https://github.com/vladimiracunadev-create/violin-adventure/actions/workflows/release.yml)
+[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-19a99b)](LICENSE)
+
+![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)
+![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)
+![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-5A0FC8?logo=pwa&logoColor=white)
+
+[**⬇️ Descargar**](https://github.com/vladimiracunadev-create/violin-adventure/releases/latest) · [**🌐 Landing / Web**](https://vladimiracunadev-create.github.io/violin-adventure/) · [**📖 Documentación**](docs/)
+
+</div>
+
+Multiplataforma para acompañar a una niña de 10 años en sus primeros pasos con el violín.
+La versión **1.0.0** comparte la misma base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.
 
 > La aplicación complementa, pero no reemplaza, la observación de una profesora o profesor de violín. La postura, el tamaño del instrumento, la hombrera, la mentonera y la afinación de los dedos requieren revisión humana.
+
+## Vistazo
+
+|  |  |  |
+| :---: | :---: | :---: |
+| ![Inicio](docs/screenshots/01-inicio.png) | ![Ruta de lecciones](docs/screenshots/02-ruta.png) | ![Lección con guía visual](docs/screenshots/07-leccion.png) |
+| **Inicio** | **Ruta de 24 lecciones** | **Lección con guía visual** |
+| ![Afinador](docs/screenshots/03-afinador.png) | ![Metrónomo](docs/screenshots/04-ritmo.png) | ![Panel familiar](docs/screenshots/06-familia.png) |
+| **Afinador cromático** | **Metrónomo y pulso** | **Panel familiar** |
 
 ## Funcionalidades
 

@@ -11,6 +11,7 @@ src-tauri/gen/
 .env.*
 !.env.example
 coverage/
+site/screenshots/
 .idea/
 .vscode/*
 !.vscode/extensions.json

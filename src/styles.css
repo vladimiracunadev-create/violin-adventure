@@ -22,7 +22,7 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradie
 button, input, textarea { font: inherit; }
 button { cursor: pointer; }
 button:disabled { cursor: not-allowed; opacity: 0.48; }
-.app { min-height: 100vh; padding-bottom: 92px; }
+.app { min-height: 100vh; padding-bottom: 108px; }
 .large-text { font-size: 1.13rem; }
 .topbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 14px clamp(18px, 4vw, 56px); background: rgba(247, 244, 255, 0.88); backdrop-filter: blur(18px); border-bottom: 1px solid rgba(109, 74, 255, 0.1); }
 .brand { display: flex; align-items: center; gap: 11px; border: 0; background: transparent; color: var(--ink); text-align: left; padding: 0; }
