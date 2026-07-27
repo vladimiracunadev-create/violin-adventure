@@ -3,7 +3,7 @@ import { AchievementShelf } from "./components/AchievementShelf";
 import { OnboardingDialog } from "./components/OnboardingDialog";
 import { PwaNotices } from "./components/PwaNotices";
 import { lessons, worlds } from "./data/curriculum";
-import { playClick, playReferenceTone, speakInstruction } from "./lib/audio";
+import { playClick, playViolinTone, preloadViolinStrings, speakInstruction } from "./lib/audio";
 import { getAchievements, type Achievement } from "./lib/achievements";
 import { createFamilyPin, isValidFamilyPin, verifyFamilyPin } from "./lib/familyPin";
 import { useModalA11y } from "./hooks/useModalA11y";
@@ -336,7 +336,7 @@ function LessonDialog({ lesson, isCompleted, soundEnabled, onClose, onComplete }
             return (
               <div className={`step-card ${checked ? "done" : ""}`} key={step.title}>
                 <button className="step-check" aria-label={checked ? "Marcar paso como pendiente" : "Marcar paso como realizado"} onClick={() => setCheckedSteps((current) => checked ? current.filter((value) => value !== index) : [...current, index])}><span className="check-circle">{checked ? "✓" : index + 1}</span></button>
-                <div><strong>{step.title}</strong><p>{step.instruction}</p>{step.safety && <small className="safety">🛡️ {step.safety}</small>}<div className="step-tools">{soundEnabled && <button onClick={() => readStep(`${step.title}. ${step.instruction}`)}>🔊 Escuchar</button>}{step.referenceFrequency && <button onClick={() => void playReferenceTone(step.referenceFrequency!)}>♪ Nota de ejemplo</button>}</div></div>
+                <div><strong>{step.title}</strong><p>{step.instruction}</p>{step.safety && <small className="safety">🛡️ {step.safety}</small>}<div className="step-tools">{soundEnabled && <button onClick={() => readStep(`${step.title}. ${step.instruction}`)}>🔊 Escuchar</button>}{step.referenceFrequency && <button onClick={() => void playViolinTone(step.referenceFrequency!)}>♪ Nota de ejemplo</button>}</div></div>
                 <small>{step.durationMinutes} min</small>
               </div>
             );
@@ -372,6 +372,7 @@ function Tuner({ soundEnabled, calibration, onCalibrationChange, onChallengeComp
   const targetMidiRef = useRef(targetMidi);
   const calibrationRef = useRef(calibration);
 
+  useEffect(() => { preloadViolinStrings(); }, []);
   useEffect(() => { modeRef.current = mode; }, [mode]);
   useEffect(() => { challengeActiveRef.current = challengeActive; }, [challengeActive]);
   useEffect(() => { targetMidiRef.current = targetMidi; }, [targetMidi]);
@@ -466,14 +467,14 @@ function Tuner({ soundEnabled, calibration, onCalibrationChange, onChallengeComp
           <article className="card">
             <h2>Notas de referencia</h2><p>La calibración habitual es 440 Hz. No la cambies sin indicación docente.</p>
             <label className="calibration-control"><span>La4 = <strong>{calibration} Hz</strong></span><input aria-label="Calibración de la nota La" type="range" min="432" max="446" step="1" value={calibration} onChange={(event: { target: HTMLInputElement }) => onCalibrationChange(Number(event.target.value))} /></label>
-            <div className="string-buttons">{violinStrings.map((string) => <button key={string.scientific} onClick={() => soundEnabled && void playReferenceTone(string.frequency)}><strong>{string.name}</strong><span>{string.scientific}</span><small>{string.frequency.toFixed(2)} Hz</small></button>)}</div>
+            <div className="string-buttons">{violinStrings.map((string) => <button key={string.scientific} onClick={() => soundEnabled && void playViolinTone(string.frequency)}><strong>{string.name}</strong><span>{string.scientific}</span><small>{string.frequency.toFixed(2)} Hz</small></button>)}</div>
             <aside className="safety-box">🛡️ Ajustes grandes de clavijas deben realizarlos una persona adulta o profesora.</aside>
           </article>
 
           <article className="card challenge-card">
             <span className="eyebrow">DESAFÍO DE OÍDO</span><h2>Toca la nota objetivo</h2>
             <select value={targetMidi} onChange={(event: { target: HTMLSelectElement }) => { setTargetMidi(Number(event.target.value)); resetChallenge(); }}>{BEGINNER_NOTES.map((note) => <option key={note.scientific} value={note.midi}>{note.name} · {note.scientific}</option>)}</select>
-            <button className="reference-button" onClick={() => soundEnabled && void playReferenceTone(frequencyForMidi(target.midi, calibration))}>♪ Escuchar {target.name}</button>
+            <button className="reference-button" onClick={() => soundEnabled && void playViolinTone(frequencyForMidi(target.midi, calibration))}>♪ Escuchar {target.name}</button>
             <div className="challenge-progress" role="progressbar" aria-label="Estabilidad de la nota objetivo" aria-valuemin={0} aria-valuemax={30} aria-valuenow={stableFrames}><span style={{ width: `${(stableFrames / 30) * 100}%` }} /></div>
             <p>{challengeMessage}</p>
             <button className="secondary-button" onClick={() => { const next = !challengeActive; setChallengeActive(next); challengeActiveRef.current = next; resetChallenge(); if (next && !listening) setChallengeMessage("Activa el micrófono y luego toca la nota objetivo."); }}>{challengeActive ? "Detener desafío" : "Comenzar desafío"}</button>
@@ -546,7 +547,7 @@ function MusicReadingGame({ soundEnabled, score, attempts, onAttempt }: {
     if (correct) {
       setFeedback(`¡Correcto! Es ${note.name}. Escucha y busca la siguiente.`);
       setLocked(true);
-      if (soundEnabled) void playReferenceTone(frequencyForMidi(note.midi), 0.9);
+      if (soundEnabled) void playViolinTone(frequencyForMidi(note.midi), 0.9);
       timeoutRef.current = window.setTimeout(() => {
         setNoteIndex((current) => (current + 3) % READING_NOTES.length);
         setLocked(false);
@@ -771,7 +772,7 @@ function FamilyScreen({ progress, achievements, setProgress }: {
 
       <article className="card badges-card"><span className="eyebrow">PROGRESO POSITIVO</span><h2>Insignias de aprendizaje</h2><AchievementShelf achievements={achievements} /></article>
       <article className="card safety-family-card"><h2>Cuándo pedir ayuda profesional</h2><div><span>🧍‍♀️ Dolor, tensión o instrumento que se cae</span><span>🎻 Puente inclinado, cuerda rota o clavija trabada</span><span>👂 Dificultad persistente para encontrar las notas</span><span>📏 Dudas sobre tamaño del violín, mentonera u hombrera</span></div></article>
-      {unlocked && <article className="card privacy-card"><h2>Privacidad por diseño 🔒</h2><p>No hay publicidad, cuenta, analítica ni servidor. El nombre y el progreso permanecen en el dispositivo. El micrófono se utiliza en tiempo real y nunca se graba.</p><details><summary>Reiniciar todos los datos locales</summary><p>Primero exporta un respaldo. Esta acción elimina lecciones, prácticas y ajustes del dispositivo.</p><button className="secondary-button danger" onClick={() => { if (window.confirm("¿Eliminar todo el progreso local? Esta acción no se puede deshacer.")) { clearPracticeTimer(); setProgress({ ...defaultProgress }); } }}>Reiniciar progreso</button></details></article>}
+      {unlocked && <article className="card privacy-card"><h2>Privacidad por diseño 🔒</h2><p>No hay publicidad, cuenta, analítica ni servidor. El nombre y el progreso permanecen en el dispositivo. El micrófono se utiliza en tiempo real y nunca se graba.</p><p className="audio-credit">🎻 Las notas de referencia usan grabaciones reales de violín del soundfont <strong>FluidR3_GM</strong> de Frank Wen (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noreferrer">CC BY 3.0</a>).</p><details><summary>Reiniciar todos los datos locales</summary><p>Primero exporta un respaldo. Esta acción elimina lecciones, prácticas y ajustes del dispositivo.</p><button className="secondary-button danger" onClick={() => { if (window.confirm("¿Eliminar todo el progreso local? Esta acción no se puede deshacer.")) { clearPracticeTimer(); setProgress({ ...defaultProgress }); } }}>Reiniciar progreso</button></details></article>}
     </section>
   );
 }

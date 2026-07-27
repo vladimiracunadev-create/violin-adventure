@@ -1,7 +1,7 @@
 {
   "name": "violin-adventure",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Aplicación educativa para aprender violín desde los 10 años, disponible como web, Windows, Android, iOS, Linux y macOS.",
   "type": "module",
   "packageManager": "pnpm@10.14.0",

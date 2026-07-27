@@ -8,8 +8,18 @@
 | Currículo y textos | Contenido original del repositorio | MIT |
 | Ilustraciones SVG | Contenido original del repositorio | MIT |
 | Icono de aplicación | Contenido original del repositorio | MIT |
-| Tonos de referencia | Generados en tiempo real por Web Audio | No corresponde archivo externo |
+| **Notas de violín reales** (`public/audio/violin/*.mp3`) | Soundfont **FluidR3_GM** de **Frank Wen**, exportado por nota desde [gleitz/midi-js-soundfonts](https://github.com/gleitz/midi-js-soundfonts) | **CC BY 3.0** — requiere atribución (ver abajo) |
+| Clic de metrónomo y tonos de respaldo | Generados en tiempo real por Web Audio | No corresponde archivo externo |
 | Voz de instrucciones | Motor de síntesis instalado en el dispositivo | Sujeta al sistema del dispositivo; no se redistribuye audio |
+
+### Atribución obligatoria (CC BY 3.0)
+
+Las diez notas de violín reales (Sol3, Re4, Mi4, Fa♯4, Sol4, La4, Si4, Do♯5, Re5, Mi5)
+provienen del soundfont **Fluid (R3) General MIDI** creado por **Frank Wen**, publicado bajo
+[Creative Commons Attribution 3.0](https://creativecommons.org/licenses/by/3.0/). Los archivos
+por nota se tomaron del proyecto [gleitz/midi-js-soundfonts](https://github.com/gleitz/midi-js-soundfonts).
+Esta atribución aparece también en la aplicación (panel Familia → privacidad).
+Al reproducirlas, la afinación se corrige por software a la frecuencia exacta y a la calibración elegida.
 
 ## Reglas para futuras incorporaciones
 
@@ -22,4 +32,5 @@ Antes de agregar una partitura, fotografía, tipografía, grabación o video:
 5. Evita recursos con licencias incompatibles con la distribución prevista.
 6. Incluye atribuciones visibles cuando la licencia lo exija.
 
-No se incluyen grabaciones comerciales ni partituras descargadas de terceros en la versión 1.0.0.
+En la versión 1.1.0 no se incluyen grabaciones comerciales ni partituras de terceros. El único
+audio de terceros son las diez notas de violín bajo CC BY 3.0 registradas y atribuidas arriba.

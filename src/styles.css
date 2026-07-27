@@ -285,6 +285,8 @@ summary { cursor: pointer; font-weight: 800; }
 /* v0.3: accesibilidad, instalación, protección familiar y continuidad */
 .skip-link { position: fixed; top: 8px; left: 8px; z-index: 1000; transform: translateY(-150%); padding: 10px 14px; border-radius: 10px; color: white; background: var(--purple-dark); font-weight: 900; }
 .skip-link:focus { transform: translateY(0); }
+.audio-credit { font-size: .82rem; color: var(--muted); margin-top: 4px; }
+.audio-credit a { color: var(--purple-dark); }
 .content:focus { outline: none; }
 button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid #ff9b2f; outline-offset: 3px; }
 select { font: inherit; }

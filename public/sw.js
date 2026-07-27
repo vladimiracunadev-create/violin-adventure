@@ -1,4 +1,4 @@
-const CACHE_NAME = "violin-adventure-v3";
+const CACHE_NAME = "violin-adventure-v3-audio";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",
@@ -11,7 +11,17 @@ const APP_SHELL = [
   "/illustrations/bow-hold.svg",
   "/illustrations/bow-lane.svg",
   "/illustrations/left-hand.svg",
-  "/illustrations/staff.svg"
+  "/illustrations/staff.svg",
+  "/audio/violin/g3.mp3",
+  "/audio/violin/d4.mp3",
+  "/audio/violin/e4.mp3",
+  "/audio/violin/fs4.mp3",
+  "/audio/violin/g4.mp3",
+  "/audio/violin/a4.mp3",
+  "/audio/violin/b4.mp3",
+  "/audio/violin/cs5.mp3",
+  "/audio/violin/d5.mp3",
+  "/audio/violin/e5.mp3"
 ];
 
 self.addEventListener("install", (event) => {

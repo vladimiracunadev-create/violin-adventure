@@ -1,5 +1,19 @@
 # Historial de cambios
 
+## 1.1.0 — 2026-07-27
+
+### Añadido
+
+- **Notas de referencia con grabaciones reales de violín** para las diez notas del
+  método (Sol3, Re4, Mi4, Fa♯4, Sol4, La4, Si4, Do♯5, Re5, Mi5), tomadas del
+  soundfont FluidR3_GM de Frank Wen (CC BY 3.0). Sustituyen a los tonos sintetizados
+  en el afinador (cuerdas al aire y desafío de oído), el juego de lectura y las
+  lecciones. El clic del metrónomo y las notas fuera de rango siguen sintetizados.
+- Corrección de afinación por software (`playbackRate`): cada muestra suena a la
+  frecuencia exacta y respeta la calibración A = 432–446 Hz.
+- Precarga de las cuatro cuerdas al abrir el afinador y almacenamiento en caché offline.
+- Atribución CC BY 3.0 visible en el panel Familia y en el registro de licencias.
+
 ## 1.0.0 — 2026-07-27
 
 Primera versión pública. Se publica el repositorio y se habilita la compilación

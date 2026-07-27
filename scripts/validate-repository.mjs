@@ -58,4 +58,10 @@ if (!progressTypes.includes("schemaVersion: 3") || !progressTypes.includes("form
 const serviceWorker = read("public/sw.js");
 if (!serviceWorker.includes("violin-adventure-v3") || !serviceWorker.includes("SKIP_WAITING")) fail("El service worker no contiene la estrategia de actualización v3.");
 
+const violinNotes = ["g3", "d4", "e4", "fs4", "g4", "a4", "b4", "cs5", "d5", "e5"];
+for (const note of violinNotes) {
+  requireFile(`public/audio/violin/${note}.mp3`);
+  if (!serviceWorker.includes(`/audio/violin/${note}.mp3`)) fail(`El service worker no precachea la nota ${note}.`);
+}
+
 console.log(`Repositorio válido: v${packageJson.version}, ${ids.length} lecciones, ${guides.length} guías, PWA con ${manifest.icons.length} iconos y esquema de progreso 3.`);

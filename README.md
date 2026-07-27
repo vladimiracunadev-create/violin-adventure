@@ -20,7 +20,7 @@
 </div>
 
 Multiplataforma para acompañar a una niña de 10 años en sus primeros pasos con el violín.
-La versión **1.0.0** comparte la misma base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.
+La versión **1.1.0** comparte la misma base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.
 
 > La aplicación complementa, pero no reemplaza, la observación de una profesora o profesor de violín. La postura, el tamaño del instrumento, la hombrera, la mentonera y la afinación de los dedos requieren revisión humana.
 
@@ -41,6 +41,7 @@ La versión **1.0.0** comparte la misma base de código para web, Windows, Andro
 - Lectura opcional de instrucciones con la voz instalada en el dispositivo.
 - Juego de lectura musical con puntuación persistente.
 - **Afinador cromático** para cuerdas al aire y notas pisadas.
+- **Notas de referencia con grabaciones reales de violín** (soundfont FluidR3_GM, CC BY 3.0), afinadas por software a la calibración elegida.
 - Calibración de La entre 432 y 446 Hz, referencias e historial de estabilidad.
 - Desafío auditivo que comprueba localmente una nota sostenida.
 - Metrónomo de 40 a 160 BPM, compases de 2, 3 y 4 pulsos y corcheas.
@@ -149,7 +150,7 @@ pnpm desktop:build
 
 En Linux se generan `.deb`, `.AppImage` y `.rpm`; en macOS un `.dmg`. Para un `.dmg`
 universal (Intel + Apple Silicon): `pnpm tauri build --target universal-apple-darwin`.
-En la práctica basta con etiquetar `v1.0.0` y dejar que GitHub Actions los compile.
+En la práctica basta con etiquetar la versión (`v1.1.0`) y dejar que GitHub Actions los compile.
 
 ## Android e iOS
 
@@ -217,7 +218,7 @@ violin-adventure/
 
 ## Estado real
 
-**1.0.0 — primera versión pública.**
+**1.1.0 — versión pública con audio real de violín.**
 
 La aplicación contiene una experiencia funcional, una arquitectura preparada para distribución y compilación automática de instaladores para Windows, Android, Linux y macOS mediante GitHub Actions. Aunque técnicamente es una versión estable y publicable, todavía no se considera un método pedagógico validado ni un producto aprobado para las tiendas oficiales hasta completar revisión docente, pruebas con familias, auditoría de accesibilidad, ensayos acústicos e instalación en dispositivos reales.
 
