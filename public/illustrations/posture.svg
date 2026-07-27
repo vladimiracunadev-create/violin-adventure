@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" role="img" aria-labelledby="t d">
+<title id="t">Postura saludable para sostener el violín</title><desc id="d">Niña de pie con hombros relajados, cabeza suave y violín equilibrado.</desc>
+<rect width="720" height="360" rx="32" fill="#effdfb"/>
+<circle cx="340" cy="70" r="40" fill="#f0bd8f"/><path d="M300 66c5-46 73-56 84-3-18-13-47-16-84 3" fill="#4b2e2d"/>
+<path d="M340 112v74M340 148l-72 18M340 150l86 29M340 186l-42 118M340 186l54 118" stroke="#3f4961" stroke-width="18" stroke-linecap="round"/>
+<path d="M270 156l-23-7c-16-5-28 12-17 25l21 24c19 22 57 6 54-23l-2-17z" fill="#ad6d37" stroke="#6d3f20" stroke-width="4"/>
+<path d="M251 167l-60 18" stroke="#33251e" stroke-width="8" stroke-linecap="round"/>
+<path d="M427 179l110 45" stroke="#7a563b" stroke-width="7" stroke-linecap="round"/>
+<g font-family="Segoe UI, sans-serif" font-size="19" font-weight="700" fill="#25223a">
+<text x="42" y="70">Cabeza suave</text><path d="M174 66l122 10" stroke="#19a99b" stroke-width="3"/>
+<text x="40" y="133">Hombros bajos</text><path d="M184 128l130 18" stroke="#19a99b" stroke-width="3"/>
+<text x="500" y="92">Respira libre</text><path d="M496 96l-120 54" stroke="#6d4aff" stroke-width="3"/>
+<text x="487" y="304">Pies estables</text><path d="M480 297l-73 8" stroke="#6d4aff" stroke-width="3"/>
+</g>
+<rect x="38" y="240" width="205" height="72" rx="18" fill="#fff" stroke="#b9e9e4"/>
+<text x="140" y="269" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="17" fill="#08786d" font-weight="700">Sin dolor ni presión</text>
+<text x="140" y="293" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" fill="#68637d">La profesora ajusta hombrera</text>
+</svg>

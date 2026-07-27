@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" role="img" aria-labelledby="t d">
+<title id="t">Partes principales del violín</title><desc id="d">Ilustración educativa con voluta, clavijas, diapasón, puente y cordal.</desc>
+<rect width="720" height="360" rx="32" fill="#f7f4ff"/>
+<g transform="translate(250 24)">
+<path d="M95 26c-27 0-32 27-15 41-17 8-20 31-4 44l17 13v85c-31 13-49 42-39 70 8 24 31 35 53 27 11 21 39 21 50 0 22 8 45-3 53-27 10-28-8-57-39-70v-85l17-13c16-13 13-36-4-44 17-14 12-41-15-41-13 0-21 9-24 19-3-10-11-19-24-19z" fill="#ad6d37" stroke="#6d3f20" stroke-width="4"/>
+<path d="M122 61v176" stroke="#33251e" stroke-width="26" stroke-linecap="round"/>
+<path d="M109 155h26" stroke="#f6ddab" stroke-width="9"/>
+<path d="M103 240h38l-5 46h-28z" fill="#2d2735"/>
+<path d="M116 46c-16-20 10-31 23-17 12 14-2 31-15 25" fill="none" stroke="#6d3f20" stroke-width="5"/>
+<circle cx="87" cy="79" r="8" fill="#3b2a22"/><circle cx="157" cy="79" r="8" fill="#3b2a22"/>
+<path d="M113 54v230M119 54v230M125 54v230M131 54v230" stroke="#e8d4a6" stroke-width="1.7"/>
+</g>
+<g font-family="Segoe UI, sans-serif" font-size="20" fill="#25223a" font-weight="700">
+<text x="56" y="70">Voluta</text><path d="M135 64L337 58" stroke="#6d4aff" stroke-width="3"/>
+<text x="40" y="125">Clavijas</text><path d="M136 119L337 102" stroke="#6d4aff" stroke-width="3"/>
+<text x="34" y="203">Diapasón</text><path d="M145 197L365 176" stroke="#6d4aff" stroke-width="3"/>
+<text x="552" y="175">Puente</text><path d="M548 169L386 179" stroke="#ff6b8a" stroke-width="3"/>
+<text x="548" y="269">Cordal</text><path d="M542 263L382 277" stroke="#ff6b8a" stroke-width="3"/>
+</g>
+<text x="360" y="326" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="18" fill="#68637d">Mira, nombra y compara con tu instrumento real.</text>
+</svg>

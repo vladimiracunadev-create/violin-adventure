@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" role="img" aria-labelledby="t d">
+<title id="t">Pista recta del arco</title><desc id="d">Vista simplificada del violín con puente, diapasón y arco paralelo al puente.</desc>
+<rect width="720" height="360" rx="32" fill="#f7f4ff"/>
+<path d="M280 36h160l-22 120c60 25 81 81 42 135-26 36-73 37-100 12-27 25-74 24-100-12-39-54-18-110 42-135z" fill="#ad6d37" stroke="#6d3f20" stroke-width="5"/>
+<path d="M360 40v250" stroke="#33251e" stroke-width="38"/>
+<path d="M298 173h124" stroke="#f3ddad" stroke-width="12"/>
+<path d="M150 205h420" stroke="#6d4aff" stroke-width="12" stroke-linecap="round"/>
+<path d="M150 235h420" stroke="#c9baff" stroke-width="3" stroke-dasharray="12 10"/>
+<path d="M150 175h420" stroke="#c9baff" stroke-width="3" stroke-dasharray="12 10"/>
+<path d="M580 205l-30-18v36z" fill="#6d4aff"/><path d="M140 205l30-18v36z" fill="#6d4aff"/>
+<g font-family="Segoe UI, sans-serif" font-weight="700" fill="#25223a">
+<text x="475" y="150" font-size="19">Puente</text><path d="M468 154l-48 18" stroke="#ff6b8a" stroke-width="3"/>
+<text x="360" y="330" text-anchor="middle" font-size="20">El arco viaja paralelo al puente</text>
+</g>
+</svg>

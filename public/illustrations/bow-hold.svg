@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" role="img" aria-labelledby="t d">
+<title id="t">Mano flexible para sostener el arco</title><desc id="d">Dedos curvos alrededor de un lápiz con el pulgar doblado y el meñique redondo.</desc>
+<rect width="720" height="360" rx="32" fill="#fff8e8"/>
+<rect x="90" y="190" width="535" height="22" rx="11" fill="#e4a64a"/>
+<path d="M240 188c-11-56 29-95 64-64 18-48 72-34 74 9 29-39 78-10 58 32 43-20 71 31 34 58-43 31-169 46-231 9-24-15-24-32 1-44z" fill="#f0bd8f" stroke="#bc805a" stroke-width="5"/>
+<path d="M302 125c-3 39 2 65 19 86M375 133c-7 31-1 58 14 79M432 160c-10 24-8 43 4 58" fill="none" stroke="#bc805a" stroke-width="7" stroke-linecap="round"/>
+<path d="M284 213c2 42 46 47 58 10" fill="none" stroke="#bc805a" stroke-width="14" stroke-linecap="round"/>
+<g font-family="Segoe UI, sans-serif" font-size="19" font-weight="700" fill="#25223a">
+<text x="45" y="73">Pulgar doblado</text><path d="M185 68l114 126" stroke="#ff6b8a" stroke-width="3"/>
+<text x="490" y="76">Meñique redondo</text><path d="M486 82l-45 80" stroke="#6d4aff" stroke-width="3"/>
+<text x="48" y="304">Dedos curvos, no apretados</text><path d="M286 296l80-67" stroke="#19a99b" stroke-width="3"/>
+</g>
+</svg>
