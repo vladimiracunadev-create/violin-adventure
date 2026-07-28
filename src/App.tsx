@@ -3,7 +3,8 @@ import { AchievementShelf } from "./components/AchievementShelf";
 import { OnboardingDialog } from "./components/OnboardingDialog";
 import { PwaNotices } from "./components/PwaNotices";
 import { lessons, worlds } from "./data/curriculum";
-import { playClick, playViolinTone, preloadViolinStrings, speakInstruction } from "./lib/audio";
+import { songs, NOTE_LABEL, type Song } from "./data/songs";
+import { playClick, playViolinTone, preloadViolinStrings, speakInstruction, startDrone, stopDrone } from "./lib/audio";
 import { getAchievements, type Achievement } from "./lib/achievements";
 import { createFamilyPin, isValidFamilyPin, verifyFamilyPin } from "./lib/familyPin";
 import { useModalA11y } from "./hooks/useModalA11y";
@@ -25,6 +26,7 @@ import {
   localDateKey,
   parseProgressImport,
   saveProgress,
+  weeklyHistory,
   weeklyMinutes
 } from "./lib/storage";
 import {
@@ -41,6 +43,7 @@ const navigation: Array<{ id: Screen; label: string; icon: string }> = [
   { id: "path", label: "Ruta", icon: "🗺️" },
   { id: "tuner", label: "Afinador", icon: "🎯" },
   { id: "rhythm", label: "Ritmo", icon: "🥁" },
+  { id: "songs", label: "Canciones", icon: "🎵" },
   { id: "practice", label: "Práctica", icon: "⏱️" },
   { id: "family", label: "Familia", icon: "👨‍👩‍👧" }
 ];
@@ -72,6 +75,11 @@ function App() {
   const hasNavigatedRef = useRef(false);
 
   useEffect(() => saveProgress(progress), [progress]);
+  useEffect(() => {
+    const root = document.documentElement;
+    if (progress.theme === "system") delete root.dataset.theme;
+    else root.dataset.theme = progress.theme;
+  }, [progress.theme]);
   useEffect(() => {
     const url = new URL(window.location.href);
     if (screen === "home") url.searchParams.delete("screen");
@@ -193,6 +201,14 @@ function App() {
             readingCorrect={progress.readingCorrect}
             readingAttempts={progress.readingAttempts}
             onReadingAttempt={recordReadingAttempt}
+          />
+        )}
+        {screen === "songs" && (
+          <Songs
+            soundEnabled={progress.soundEnabled}
+            calibration={progress.tunerCalibration}
+            songsCompleted={progress.songsCompleted}
+            onSongComplete={() => setProgress((current) => ({ ...current, songsCompleted: current.songsCompleted + 1 }))}
           />
         )}
         {screen === "practice" && <PracticeTimer soundEnabled={progress.soundEnabled} onSave={savePractice} />}
@@ -372,7 +388,9 @@ function Tuner({ soundEnabled, calibration, onCalibrationChange, onChallengeComp
   const targetMidiRef = useRef(targetMidi);
   const calibrationRef = useRef(calibration);
 
+  const [drone, setDrone] = useState(false);
   useEffect(() => { preloadViolinStrings(); }, []);
+  useEffect(() => () => stopDrone(), []);
   useEffect(() => { modeRef.current = mode; }, [mode]);
   useEffect(() => { challengeActiveRef.current = challengeActive; }, [challengeActive]);
   useEffect(() => { targetMidiRef.current = targetMidi; }, [targetMidi]);
@@ -466,15 +484,16 @@ function Tuner({ soundEnabled, calibration, onCalibrationChange, onChallengeComp
         <div className="tool-side-stack">
           <article className="card">
             <h2>Notas de referencia</h2><p>La calibración habitual es 440 Hz. No la cambies sin indicación docente.</p>
-            <label className="calibration-control"><span>La4 = <strong>{calibration} Hz</strong></span><input aria-label="Calibración de la nota La" type="range" min="432" max="446" step="1" value={calibration} onChange={(event: { target: HTMLInputElement }) => onCalibrationChange(Number(event.target.value))} /></label>
+            <label className="calibration-control"><span>La4 = <strong>{calibration} Hz</strong></span><input aria-label="Calibración de la nota La" type="range" min="432" max="446" step="1" value={calibration} onChange={(event: { target: HTMLInputElement }) => { onCalibrationChange(Number(event.target.value)); if (drone) { stopDrone(); setDrone(false); } }} /></label>
             <div className="string-buttons">{violinStrings.map((string) => <button key={string.scientific} onClick={() => soundEnabled && void playViolinTone(string.frequency)}><strong>{string.name}</strong><span>{string.scientific}</span><small>{string.frequency.toFixed(2)} Hz</small></button>)}</div>
             <aside className="safety-box">🛡️ Ajustes grandes de clavijas deben realizarlos una persona adulta o profesora.</aside>
           </article>
 
           <article className="card challenge-card">
             <span className="eyebrow">DESAFÍO DE OÍDO</span><h2>Toca la nota objetivo</h2>
-            <select value={targetMidi} onChange={(event: { target: HTMLSelectElement }) => { setTargetMidi(Number(event.target.value)); resetChallenge(); }}>{BEGINNER_NOTES.map((note) => <option key={note.scientific} value={note.midi}>{note.name} · {note.scientific}</option>)}</select>
+            <select value={targetMidi} onChange={(event: { target: HTMLSelectElement }) => { setTargetMidi(Number(event.target.value)); resetChallenge(); stopDrone(); setDrone(false); }}>{BEGINNER_NOTES.map((note) => <option key={note.scientific} value={note.midi}>{note.name} · {note.scientific}</option>)}</select>
             <button className="reference-button" onClick={() => soundEnabled && void playViolinTone(frequencyForMidi(target.midi, calibration))}>♪ Escuchar {target.name}</button>
+            <button className={drone ? "reference-button selected-toggle" : "reference-button"} aria-pressed={drone} onClick={async () => { if (drone) { stopDrone(); setDrone(false); } else if (soundEnabled) setDrone(await startDrone(frequencyForMidi(target.midi, calibration))); }}>{drone ? "⏹ Detener nota sostenida" : "🎵 Sostener la nota (drone)"}</button>
             <div className="challenge-progress" role="progressbar" aria-label="Estabilidad de la nota objetivo" aria-valuemin={0} aria-valuemax={30} aria-valuenow={stableFrames}><span style={{ width: `${(stableFrames / 30) * 100}%` }} /></div>
             <p>{challengeMessage}</p>
             <button className="secondary-button" onClick={() => { const next = !challengeActive; setChallengeActive(next); challengeActiveRef.current = next; resetChallenge(); if (next && !listening) setChallengeMessage("Activa el micrófono y luego toca la nota objetivo."); }}>{challengeActive ? "Detener desafío" : "Comenzar desafío"}</button>
@@ -491,6 +510,8 @@ function Metronome({ soundEnabled, readingCorrect, readingAttempts, onReadingAtt
   const [subdivision, setSubdivision] = useState<1 | 2>(1);
   const [running, setRunning] = useState(false);
   const [currentBeat, setCurrentBeat] = useState(0);
+  const [visualOnly, setVisualOnly] = useState(false);
+  const tapsRef = useRef<number[]>([]);
 
   useEffect(() => {
     if (!running) { setCurrentBeat(0); return; }
@@ -500,12 +521,25 @@ function Metronome({ soundEnabled, readingCorrect, readingAttempts, onReadingAtt
       tickIndex += 1;
       const beat = Math.floor((tickIndex - 1) / subdivision) % beats + 1;
       setCurrentBeat(beat);
-      if (soundEnabled) void playClick(beat === 1 && (tickIndex - 1) % subdivision === 0);
+      if (soundEnabled && !visualOnly) void playClick(beat === 1 && (tickIndex - 1) % subdivision === 0);
     };
     tick();
     const interval = window.setInterval(tick, milliseconds);
     return () => window.clearInterval(interval);
-  }, [running, bpm, beats, subdivision, soundEnabled]);
+  }, [running, bpm, beats, subdivision, soundEnabled, visualOnly]);
+
+  function tapTempo() {
+    const now = performance.now();
+    const recent = tapsRef.current.filter((time) => now - time < 2200);
+    recent.push(now);
+    tapsRef.current = recent.slice(-6);
+    if (tapsRef.current.length >= 2) {
+      const gaps: number[] = [];
+      for (let index = 1; index < tapsRef.current.length; index += 1) gaps.push(tapsRef.current[index] - tapsRef.current[index - 1]);
+      const average = gaps.reduce((sum, value) => sum + value, 0) / gaps.length;
+      setBpm(Math.min(160, Math.max(40, Math.round(60_000 / average))));
+    }
+  }
 
   return (
     <section>
@@ -517,6 +551,10 @@ function Metronome({ soundEnabled, readingCorrect, readingAttempts, onReadingAtt
         <div className="tempo-presets">{[50, 60, 72, 80, 96, 120].map((value) => <button key={value} className={bpm === value ? "selected" : ""} onClick={() => setBpm(value)}>{value}</button>)}</div>
         <div className="meter-control"><span>Pulsos</span>{[2, 3, 4].map((value) => <button key={value} className={beats === value ? "selected" : ""} onClick={() => setBeats(value)}>{value}</button>)}</div>
         <div className="meter-control"><span>División</span><button className={subdivision === 1 ? "selected" : ""} onClick={() => setSubdivision(1)}>Negras</button><button className={subdivision === 2 ? "selected" : ""} onClick={() => setSubdivision(2)}>Corcheas</button></div>
+        <div className="metro-actions">
+          <button className="secondary-button" onClick={tapTempo}>👆 Marcar tempo</button>
+          <button className={visualOnly ? "secondary-button selected-toggle" : "secondary-button"} aria-pressed={visualOnly} onClick={() => setVisualOnly((value) => !value)}>{visualOnly ? "🔇 Solo visual" : "🔊 Con sonido"}</button>
+        </div>
         <button className={running ? "secondary-button" : "primary-button"} onClick={() => setRunning((value) => !value)}>{running ? "Pausar" : "Comenzar"}</button>
       </article>
       <MusicReadingGame soundEnabled={soundEnabled} score={readingCorrect} attempts={readingAttempts} onAttempt={onReadingAttempt} />
@@ -654,6 +692,168 @@ function PracticeTimer({ soundEnabled, onSave }: { soundEnabled: boolean; onSave
   );
 }
 
+function Songs({ soundEnabled, calibration, songsCompleted, onSongComplete }: {
+  soundEnabled: boolean; calibration: number; songsCompleted: number; onSongComplete: () => void;
+}) {
+  const [song, setSong] = useState<Song>(songs[0]);
+  const [mode, setMode] = useState<"idle" | "listening" | "playalong">("idle");
+  const [index, setIndex] = useState(-1);
+  const [done, setDone] = useState(false);
+  const [message, setMessage] = useState("Escucha la canción con violín real y luego tócala tú.");
+  const abortRef = useRef(false);
+  const calibrationRef = useRef(calibration);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const frameRef = useRef<number | null>(null);
+
+  useEffect(() => { calibrationRef.current = calibration; }, [calibration]);
+
+  function stopEverything() {
+    abortRef.current = true;
+    if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+    frameRef.current = null;
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    void audioCtxRef.current?.close().catch(() => undefined);
+    audioCtxRef.current = null;
+  }
+
+  useEffect(() => () => stopEverything(), []);
+  useEffect(() => { stopEverything(); setMode("idle"); setIndex(-1); setDone(false); }, [song.id]);
+
+  const sleep = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
+
+  async function listen() {
+    stopEverything(); abortRef.current = false; setDone(false); setMode("listening");
+    setMessage("Escucha y sigue las notas iluminadas…");
+    const beat = 60_000 / song.tempo;
+    for (let i = 0; i < song.notes.length; i += 1) {
+      if (abortRef.current) { setMode("idle"); setIndex(-1); return; }
+      setIndex(i);
+      const note = song.notes[i];
+      const duration = note.beats * beat;
+      if (soundEnabled) void playViolinTone(frequencyForMidi(note.midi, calibrationRef.current), Math.min(1.8, (duration / 1000) * 0.95));
+      await sleep(duration);
+    }
+    if (!abortRef.current) { setIndex(-1); setMode("idle"); setMessage("¡Bien escuchado! Ahora intenta tocarla tú. 🎻"); }
+  }
+
+  async function playAlong() {
+    stopEverything(); abortRef.current = false; setDone(false);
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) throw new Error("no-mic");
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+      const context = new AudioContext();
+      if (context.state === "suspended") await context.resume();
+      const analyser = context.createAnalyser();
+      analyser.fftSize = 4096; analyser.smoothingTimeConstant = 0.1;
+      context.createMediaStreamSource(stream).connect(analyser);
+      streamRef.current = stream; audioCtxRef.current = context;
+      setMode("playalong"); setIndex(0);
+      setMessage(`Toca ${NOTE_LABEL[song.notes[0].midi]} para empezar.`);
+      const buffer = new Float32Array(analyser.fftSize);
+      let current = 0; let stable = 0;
+      const detect = () => {
+        if (abortRef.current) return;
+        analyser.getFloatTimeDomainData(buffer);
+        const frequency = autoCorrelate(buffer, context.sampleRate);
+        if (frequency) {
+          const result = nearestChromaticNote(frequency, calibrationRef.current);
+          if (result.midi === song.notes[current].midi && Math.abs(result.cents) <= 38) {
+            stable += 1;
+            if (stable >= 6) {
+              current += 1; stable = 0;
+              if (current >= song.notes.length) {
+                setIndex(-1); setDone(true); setMode("idle");
+                setMessage("¡Tocaste la canción completa! 🌟");
+                if (soundEnabled) void playClick(true);
+                onSongComplete();
+                stopEverything();
+                return;
+              }
+              setIndex(current);
+              setMessage(`¡Muy bien! Ahora toca ${NOTE_LABEL[song.notes[current].midi]}.`);
+            }
+          } else {
+            stable = Math.max(0, stable - 1);
+          }
+        }
+        frameRef.current = requestAnimationFrame(detect);
+      };
+      detect();
+    } catch {
+      setMode("idle");
+      setMessage("No se pudo abrir el micrófono. Revisa el permiso de la aplicación o del navegador.");
+    }
+  }
+
+  function stop() { stopEverything(); setMode("idle"); setIndex(-1); }
+
+  return (
+    <section>
+      <div className="section-heading"><div><span className="eyebrow">TOCAR DE VERDAD</span><h1>Canciones</h1><p>Escucha una canción tocada con violín real y luego tócala tú. Todas usan cuerdas al aire y primeros dedos en Re mayor.</p></div></div>
+      <div className="song-picker">
+        {songs.map((item) => (
+          <button key={item.id} className={item.id === song.id ? "selected" : ""} aria-pressed={item.id === song.id} onClick={() => setSong(item)}>
+            <span className="song-emoji">{item.emoji}</span><strong>{item.title}</strong><small>{item.subtitle}</small>
+          </button>
+        ))}
+      </div>
+      <article className="card song-card">
+        <div className="song-notes" role="list" aria-label={`Notas de ${song.title}`}>
+          {song.notes.map((note, position) => (
+            <span key={position} role="listitem" className={`song-note ${position === index ? "active" : ""}`}>
+              <b>{NOTE_LABEL[note.midi]}</b>{note.lyric && <em>{note.lyric}</em>}
+            </span>
+          ))}
+        </div>
+        <p className="assistive-message" role="status">{done ? "¡Canción completada! 🌟" : message}</p>
+        <div className="song-actions">
+          {mode === "idle" ? (
+            <>
+              <button className="primary-button" disabled={!soundEnabled} onClick={() => void listen()}>▶ Escuchar</button>
+              <button className="secondary-button" onClick={() => void playAlong()}>🎻 Tocar conmigo</button>
+            </>
+          ) : (
+            <button className="secondary-button danger" onClick={stop}>⏹ Detener</button>
+          )}
+        </div>
+        {mode === "playalong" && <p className="song-hint">🎤 Toca la nota iluminada. El micrófono se usa en tiempo real y nunca se graba.</p>}
+      </article>
+      <p className="assistive-message song-count">🎵 {songsCompleted} {songsCompleted === 1 ? "canción completada" : "canciones completadas"}</p>
+    </section>
+  );
+}
+
+function WeeklyChart({ sessions, goal }: { sessions: ProgressState["practiceSessions"]; goal: number }) {
+  const data = useMemo(() => weeklyHistory(sessions, 8), [sessions]);
+  const maxValue = Math.max(goal, 10, ...data.map((week) => week.minutes));
+  const width = 300;
+  const height = 130;
+  const pad = 20;
+  const slot = (width - pad * 2) / data.length;
+  const barWidth = slot * 0.58;
+  const goalY = height - pad - (goal / maxValue) * (height - pad * 2);
+  const total = data.reduce((sum, week) => sum + week.minutes, 0);
+  return (
+    <div className="weekly-chart">
+      {total === 0 ? (
+        <p className="chart-empty">El gráfico se llenará a medida que guardes prácticas. 🎻</p>
+      ) : (
+        <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Minutos practicados por semana en las últimas ${data.length} semanas, con una meta de ${goal} minutos.`}>
+          <line x1={pad} x2={width - pad} y1={goalY} y2={goalY} className="chart-goal-line" strokeDasharray="4 5" />
+          {data.map((week, index) => {
+            const barHeight = Math.max(0, (week.minutes / maxValue) * (height - pad * 2));
+            const x = pad + index * slot + (slot - barWidth) / 2;
+            return <rect key={week.start} x={x} y={height - pad - barHeight} width={barWidth} height={barHeight} rx={4} className={week.minutes >= goal ? "chart-bar reached" : "chart-bar"} />;
+          })}
+        </svg>
+      )}
+      <div className="chart-caption"><span>Últimas 8 semanas</span><span>Meta: {goal} min</span></div>
+    </div>
+  );
+}
+
 function FamilyScreen({ progress, achievements, setProgress }: {
   progress: ProgressState;
   achievements: Achievement[];
@@ -743,6 +943,7 @@ function FamilyScreen({ progress, achievements, setProgress }: {
             <label>Nombre o apodo<input type="text" value={progress.childName} maxLength={24} onChange={(event: { target: HTMLInputElement }) => setProgress((current) => ({ ...current, childName: event.target.value || "Violinista" }))} /></label>
             <label>Meta semanal de minutos<input type="number" min="10" max="420" step="5" value={progress.weeklyGoalMinutes} onChange={(event: { target: HTMLInputElement }) => setProgress((current) => ({ ...current, weeklyGoalMinutes: Math.min(420, Math.max(10, Number(event.target.value) || 10)) }))} /></label>
             <label className="toggle-row"><span><strong>Texto más grande</strong><small>Mejora la lectura en pantallas pequeñas</small></span><input type="checkbox" checked={progress.largeText} onChange={(event: { target: HTMLInputElement }) => setProgress((current) => ({ ...current, largeText: event.target.checked }))} /></label>
+            <label><span>Apariencia</span><div className="theme-picker" role="group" aria-label="Tema de color">{([["system", "🖥️ Sistema"], ["light", "☀️ Claro"], ["dark", "🌙 Oscuro"]] as const).map(([value, label]) => <button key={value} type="button" className={progress.theme === value ? "selected" : ""} aria-pressed={progress.theme === value} onClick={() => setProgress((current) => ({ ...current, theme: value }))}>{label}</button>)}</div></label>
             <label className="toggle-row"><span><strong>Sonidos y lectura</strong><small>Notas, metrónomo y voz del dispositivo</small></span><input type="checkbox" checked={progress.soundEnabled} onChange={(event: { target: HTMLInputElement }) => setProgress((current) => ({ ...current, soundEnabled: event.target.checked }))} /></label>
             <div className="backup-actions"><button className="secondary-button" onClick={() => void exportProgress(progress)}>Exportar respaldo</button><label className="file-button">Importar respaldo<input className="visually-hidden" type="file" accept="application/json,.json" onChange={(event: { target: HTMLInputElement }) => void importFile(event.target.files?.[0])} /></label></div>
             {importMessage && <p className="assistive-message" role="status">{importMessage}</p>}
@@ -765,6 +966,8 @@ function FamilyScreen({ progress, achievements, setProgress }: {
 
           <article className="card summary-card">
             <h2>Resumen</h2><div className="summary-numbers"><div><strong>{validLessons}</strong><span>lecciones</span></div><div><strong>{totalMinutes}</strong><span>minutos</span></div><div><strong>{progress.streak}</strong><span>días de racha</span></div><div><strong>{thisWeekMinutes}</strong><span>esta semana</span></div><div><strong>{progress.pitchChallengesCompleted}</strong><span>notas logradas</span></div><div><strong>{readingAccuracy}%</strong><span>lectura musical</span></div></div>
+            <h3>Minutos por semana</h3>
+            <WeeklyChart sessions={progress.practiceSessions} goal={progress.weeklyGoalMinutes} />
             <h3>Últimas prácticas</h3>{recentSessions.length === 0 ? <p>Aún no hay sesiones guardadas.</p> : <div className="session-list">{recentSessions.map((session) => <div key={session.id}><span>{new Intl.DateTimeFormat("es-CL", { day: "2-digit", month: "short" }).format(new Date(session.date))}</span><strong>{session.minutes} min</strong><em>{session.focus}</em><small>{session.note || "Práctica completada"}</small></div>)}</div>}
           </article>
         </div>

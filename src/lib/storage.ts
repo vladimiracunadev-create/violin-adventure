@@ -14,12 +14,14 @@ export const defaultProgress: ProgressState = {
   streak: 0,
   childName: "Violinista",
   largeText: false,
+  theme: "system",
   soundEnabled: true,
   weeklyGoalMinutes: 45,
   tunerCalibration: 440,
   pitchChallengesCompleted: 0,
   readingCorrect: 0,
-  readingAttempts: 0
+  readingAttempts: 0,
+  songsCompleted: 0
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -102,12 +104,14 @@ export function normalizeProgress(value: unknown): ProgressState {
       : undefined,
     childName: cleanText(candidate.childName, defaultProgress.childName, 24),
     largeText: typeof candidate.largeText === "boolean" ? candidate.largeText : false,
+    theme: candidate.theme === "light" || candidate.theme === "dark" ? candidate.theme : "system",
     soundEnabled: typeof candidate.soundEnabled === "boolean" ? candidate.soundEnabled : true,
     weeklyGoalMinutes: Math.round(clampNumber(candidate.weeklyGoalMinutes, 45, 10, 420)),
     tunerCalibration: clampNumber(candidate.tunerCalibration, 440, 432, 446),
     pitchChallengesCompleted: Math.round(clampNumber(candidate.pitchChallengesCompleted, 0, 0, 1_000_000)),
     readingCorrect,
     readingAttempts,
+    songsCompleted: Math.round(clampNumber(candidate.songsCompleted, 0, 0, 1_000_000)),
     familyPin: normalizeFamilyPin(candidate.familyPin)
   };
 }
@@ -233,6 +237,25 @@ export function startOfLocalWeek(date = new Date()): Date {
   const mondayOffset = (result.getDay() + 6) % 7;
   result.setDate(result.getDate() - mondayOffset);
   return result;
+}
+
+export function weeklyHistory(sessions: PracticeSession[], weeks = 8, now = new Date()): { start: number; minutes: number }[] {
+  const currentWeekStart = startOfLocalWeek(now);
+  const buckets: { start: number; minutes: number }[] = [];
+  for (let offset = weeks - 1; offset >= 0; offset -= 1) {
+    const weekStart = new Date(currentWeekStart);
+    weekStart.setDate(currentWeekStart.getDate() - offset * 7);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 7);
+    const minutes = sessions.reduce((sum, session) => {
+      const timestamp = Date.parse(session.date);
+      return Number.isFinite(timestamp) && timestamp >= weekStart.getTime() && timestamp < weekEnd.getTime()
+        ? sum + session.minutes
+        : sum;
+    }, 0);
+    buckets.push({ start: weekStart.getTime(), minutes });
+  }
+  return buckets;
 }
 
 export function weeklyMinutes(sessions: PracticeSession[], now = new Date()): number {

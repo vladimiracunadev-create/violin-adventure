@@ -1,7 +1,7 @@
 {
   "name": "violin-adventure",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Aplicación educativa para aprender violín desde los 10 años, disponible como web, Windows, Android, iOS, Linux y macOS.",
   "type": "module",
   "packageManager": "pnpm@10.14.0",
@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "tauri": "tauri",
     "desktop:dev": "tauri dev",
     "desktop:build": "tauri build",
@@ -32,6 +33,7 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.0",
     "@tauri-apps/cli": "^2.11.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

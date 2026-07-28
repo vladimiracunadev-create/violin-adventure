@@ -1,4 +1,6 @@
-export type Screen = "home" | "path" | "tuner" | "rhythm" | "practice" | "family";
+export type Screen = "home" | "path" | "tuner" | "rhythm" | "songs" | "practice" | "family";
+
+export type ThemePreference = "system" | "light" | "dark";
 
 export type LessonStepKind = "observe" | "move" | "listen" | "play" | "reflect";
 
@@ -59,12 +61,14 @@ export interface ProgressState {
   lastPracticeDate?: string;
   childName: string;
   largeText: boolean;
+  theme: ThemePreference;
   soundEnabled: boolean;
   weeklyGoalMinutes: number;
   tunerCalibration: number;
   pitchChallengesCompleted: number;
   readingCorrect: number;
   readingAttempts: number;
+  songsCompleted: number;
   familyPin?: FamilyPinCredential;
 }
 

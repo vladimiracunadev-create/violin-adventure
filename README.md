@@ -20,7 +20,7 @@
 </div>
 
 Multiplataforma para acompañar a una niña de 10 años en sus primeros pasos con el violín.
-La versión **1.1.0** comparte la misma base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.
+La versión **1.2.0** comparte la misma base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.
 
 > La aplicación complementa, pero no reemplaza, la observación de una profesora o profesor de violín. La postura, el tamaño del instrumento, la hombrera, la mentonera y la afinación de los dedos requieren revisión humana.
 
@@ -30,8 +30,10 @@ La versión **1.1.0** comparte la misma base de código para web, Windows, Andro
 | :---: | :---: | :---: |
 | ![Inicio](docs/screenshots/01-inicio.png) | ![Ruta de lecciones](docs/screenshots/02-ruta.png) | ![Lección con guía visual](docs/screenshots/07-leccion.png) |
 | **Inicio** | **Ruta de 24 lecciones** | **Lección con guía visual** |
-| ![Afinador](docs/screenshots/03-afinador.png) | ![Metrónomo](docs/screenshots/04-ritmo.png) | ![Panel familiar](docs/screenshots/06-familia.png) |
-| **Afinador cromático** | **Metrónomo y pulso** | **Panel familiar** |
+| ![Afinador](docs/screenshots/03-afinador.png) | ![Metrónomo](docs/screenshots/04-ritmo.png) | ![Canciones](docs/screenshots/08-canciones.png) |
+| **Afinador cromático** | **Metrónomo y pulso** | **Canciones con violín real** |
+| ![Práctica](docs/screenshots/05-practica.png) | ![Panel familiar](docs/screenshots/06-familia.png) | ![Modo oscuro](docs/screenshots/dark-inicio.png) |
+| **Sesión de práctica** | **Panel familiar** | **Modo oscuro** |
 
 ## Funcionalidades
 
@@ -43,8 +45,11 @@ La versión **1.1.0** comparte la misma base de código para web, Windows, Andro
 - **Afinador cromático** para cuerdas al aire y notas pisadas.
 - **Notas de referencia con grabaciones reales de violín** (soundfont FluidR3_GM, CC BY 3.0), afinadas por software a la calibración elegida.
 - Calibración de La entre 432 y 446 Hz, referencias e historial de estabilidad.
-- Desafío auditivo que comprueba localmente una nota sostenida.
-- Metrónomo de 40 a 160 BPM, compases de 2, 3 y 4 pulsos y corcheas.
+- Desafío auditivo y **modo drone** (sostener la nota) que comprueban localmente una nota.
+- **Canciones para tocar** con violín real y modo «Tocar conmigo» que verifica cada nota con el micrófono.
+- Metrónomo de 40 a 160 BPM, compases de 2, 3 y 4 pulsos, corcheas, **tap-tempo** y **modo visual**.
+- **Modo oscuro** (Sistema / Claro / Oscuro) y respeto de movimiento reducido.
+- **Gráfico de minutos por semana** en el panel familiar.
 - Temporizador recuperable de 5, 10, 15 o 20 minutos.
 - Bienvenida inicial, metas semanales, racha, historial e insignias.
 - Panel familiar protegible con PIN contra cambios accidentales.
@@ -150,7 +155,8 @@ pnpm desktop:build
 
 En Linux se generan `.deb`, `.AppImage` y `.rpm`; en macOS un `.dmg`. Para un `.dmg`
 universal (Intel + Apple Silicon): `pnpm tauri build --target universal-apple-darwin`.
-En la práctica basta con etiquetar la versión (`v1.1.0`) y dejar que GitHub Actions los compile.
+En la práctica basta con etiquetar la versión (`v1.2.0`) y dejar que GitHub Actions los compile.
+Las pruebas E2E se ejecutan con `pnpm test:e2e` (Playwright).
 
 ## Android e iOS
 
@@ -218,7 +224,7 @@ violin-adventure/
 
 ## Estado real
 
-**1.1.0 — versión pública con audio real de violín.**
+**1.2.0 — audio real, canciones, modo oscuro y más práctica.**
 
 La aplicación contiene una experiencia funcional, una arquitectura preparada para distribución y compilación automática de instaladores para Windows, Android, Linux y macOS mediante GitHub Actions. Aunque técnicamente es una versión estable y publicable, todavía no se considera un método pedagógico validado ni un producto aprobado para las tiendas oficiales hasta completar revisión docente, pruebas con familias, auditoría de accesibilidad, ensayos acústicos e instalación en dispositivos reales.
 

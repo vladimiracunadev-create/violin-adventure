@@ -59,6 +59,43 @@ export function preloadViolinStrings(): void {
  * altura; si no, recurre al tono sintetizado. `frequency` fija la altura exacta
  * (respetando la calibración), corrigiendo la afinación nativa de la muestra.
  */
+let droneNodes: { source: AudioBufferSourceNode; gain: GainNode } | null = null;
+
+/** Sostiene en bucle suave la nota indicada para que la niña la iguale de oído. */
+export async function startDrone(frequency: number): Promise<boolean> {
+  stopDrone();
+  const sample = VIOLIN_SAMPLES[Math.round(frequencyToMidi(frequency, 440))];
+  if (!sample) return false;
+  try {
+    const context = await ensureAudioReady();
+    const buffer = await loadSample(sample.file);
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    source.loopStart = 0.3;
+    source.loopEnd = Math.max(0.7, buffer.duration - 0.4);
+    source.playbackRate.value = frequency / sample.native;
+    const gain = context.createGain();
+    gain.gain.setValueAtTime(0.0001, context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.26, context.currentTime + 0.15);
+    source.connect(gain).connect(context.destination);
+    source.start();
+    droneNodes = { source, gain };
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function stopDrone(): void {
+  if (!droneNodes) return;
+  const { source, gain } = droneNodes;
+  droneNodes = null;
+  try { source.stop(); } catch { /* ya detenido */ }
+  source.disconnect();
+  gain.disconnect();
+}
+
 export async function playViolinTone(frequency: number, seconds = 1.6): Promise<void> {
   const sample = VIOLIN_SAMPLES[Math.round(frequencyToMidi(frequency, 440))];
   if (!sample) {

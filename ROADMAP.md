@@ -1,59 +1,57 @@
 # Hoja de ruta
 
-## 0.1 — MVP completado
+## Publicado
 
-- 12 lecciones iniciales.
-- Afinador de cuatro cuerdas.
-- Metrónomo, temporizador y progreso local.
-- PWA y configuración Tauri.
+### 1.2 — Práctica y experiencia (actual)
 
-## 0.2 — Prototipo educativo completado
+- **Modo oscuro** con selección Sistema / Claro / Oscuro y respeto de `prefers-reduced-motion`.
+- **Canciones**: tres melodías de dominio público tocadas con violín real, con modo
+  «Tocar conmigo» que detecta con el micrófono si la niña toca cada nota en secuencia.
+- **Metrónomo** con *tap-tempo* y modo visual (silencioso).
+- **Modo drone** en el afinador: sostiene la nota objetivo para igualarla de oído.
+- **Gráfico de minutos por semana** en el panel Familia.
+- Animación sutil de las guías visuales.
+- Pruebas **E2E (Playwright)** integradas en CI.
 
-- 24 lecciones en seis mundos.
-- Ilustraciones SVG originales.
-- Voz del dispositivo, afinador cromático y desafío de nota.
-- Juego inicial de lectura musical.
-- Metas semanales, importación y exportación.
+### 1.1 — Audio real
 
-## 0.3 — Endurecimiento técnico completado
+- Notas de referencia con grabaciones reales de violín (FluidR3_GM, CC BY 3.0),
+  afinadas por software a la calibración elegida.
 
-- Bienvenida y configuración inicial segura.
-- Esquema de progreso 3 y migraciones anteriores.
-- Temporizador recuperable tras bloqueo, navegación o cierre.
-- Puntuación persistente e insignias derivadas del progreso.
-- PIN familiar local con derivación PBKDF2.
-- Foco atrapado y restaurado en diálogos, enlace de salto y foco visible.
-- Iconos PWA PNG/maskable, aviso de instalación y actualización.
-- Pruebas de dominio ejecutables sin dependencias.
-- Guía familiar, plan de ocho semanas y registro de licencias.
+### 1.0 — Primera versión pública
 
-## 0.4 — Validación pedagógica
+- 24 lecciones, afinador cromático, metrónomo, práctica guiada, insignias y panel familiar.
+- Compilación automática de instaladores (Windows, Android, Linux, macOS) por GitHub Actions.
+- Landing page en GitHub Pages.
 
-- Revisión completa por profesora de violín infantil.
-- Corrección de terminología, postura y secuencia de dedos.
-- Prueba piloto con familias y observación de sesiones reales.
-- Grabaciones originales de cuerdas y ejercicios, con licencias documentadas.
-- Ajuste del currículo según resultados, no solo opiniones.
+## Planificado
 
-## 0.5 — Interactividad musical
+### 1.3 — Alcance y hábitos
 
-- Reconocimiento de ataques, duración y ritmo.
-- Ejercicios de arrastrar, ordenar y lectura a primera vista.
+- **Internacionalización (es / en / pt)**: interfaz y currículo traducidos y verificados.
+- **Perfiles múltiples** (hermanos) en un mismo dispositivo, con migración de esquema.
+- **Recordatorios de práctica** opt-in mediante notificaciones locales (plugin Tauri en móvil).
+- **PWA jugable** publicada en GitHub Pages para probar sin instalar.
+- **Auditoría Lighthouse/PWA** en CI.
+
+### 1.4 — Interactividad musical
+
+- Reconocimiento de ataques, duración y ritmo; lectura a primera vista.
 - `AudioWorklet` para análisis fuera del hilo visual.
 - Calibración de ruido ambiental y tolerancias por micrófono.
-- Paquetes de repertorio cargables y versionados.
+- Más repertorio de dominio público, versionado y con licencias documentadas.
 
-## 0.6 — Calidad de producto
+### Pendiente transversal — Validación pedagógica (requiere personas)
 
-- Pruebas E2E y auditoría de accesibilidad.
-- Pruebas en WebView2, Android e iPhone/iPad.
-- Persistencia nativa opcional mediante plugin Tauri.
-- Instaladores firmados y estrategia de actualización segura.
-- Capturas, textos legales y fichas para tiendas.
+- **Revisión completa por una profesora o profesor de violín infantil** (ver
+  [docs/TEACHER_REVIEW.md](docs/TEACHER_REVIEW.md)). No puede sustituirse por software.
+- Prueba piloto con familias y observación de sesiones reales.
+- Ensayos acústicos con distintos micrófonos y dispositivos.
+- Ajuste del currículo según resultados medidos, no solo opiniones.
 
-## 1.0 — Producto validado
+### Distribución en tiendas
 
-- Aprobación curricular documentada.
-- Pruebas de usabilidad, acústica, privacidad y accesibilidad.
+- Auditoría de accesibilidad y privacidad infantil.
+- Keystore de Android persistente y actualización firmada de escritorio (updater Tauri).
+- Compilación de iOS con cuenta Apple Developer.
 - Publicación en Microsoft Store, Google Play y App Store.
-- Sincronización familiar opcional y cifrada solo si una necesidad real la justifica.

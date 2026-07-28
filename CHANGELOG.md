@@ -1,5 +1,27 @@
 # Historial de cambios
 
+## 1.2.0 — 2026-07-27
+
+### Añadido
+
+- **Modo oscuro** con selección Sistema / Claro / Oscuro (persistente) y respeto
+  de `prefers-reduced-motion` en las animaciones.
+- **Sección Canciones**: tres melodías de dominio público (Estrellita, Himno a la
+  alegría y Mi corderito) tocadas con grabaciones reales de violín, con modo
+  «Tocar conmigo» que usa el micrófono para comprobar, nota a nota, que la niña
+  toca la melodía correcta. El audio se analiza en tiempo real y nunca se graba.
+- **Metrónomo**: *tap-tempo* (marcar el pulso) y modo visual silencioso.
+- **Modo drone** en el afinador: sostiene la nota objetivo en bucle suave para
+  igualarla de oído.
+- **Gráfico de minutos por semana** (últimas 8 semanas) en el panel Familia.
+- Animación sutil de las guías visuales de las lecciones.
+- Pruebas **E2E con Playwright** integradas en el flujo de CI.
+
+### Cambiado
+
+- Superficies migradas a variables de tema para soportar claro y oscuro.
+- Navegación inferior ampliada a siete secciones (incluye Canciones).
+
 ## 1.1.0 — 2026-07-27
 
 ### Añadido

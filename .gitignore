@@ -12,6 +12,9 @@ src-tauri/gen/
 !.env.example
 coverage/
 site/screenshots/
+test-results/
+playwright-report/
+.playwright/
 .idea/
 .vscode/*
 !.vscode/extensions.json
