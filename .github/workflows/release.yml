@@ -195,7 +195,8 @@ jobs:
           echo "Usando build-tools en $BUILD_TOOLS"
           OUT_DIR="release-artifacts"
           mkdir -p "$OUT_DIR"
-          VERSION="1.0.0"
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "Versión de la app: $VERSION"
 
           # APK universal (para instalación directa / sideload)
           APK_SRC="$(find src-tauri/gen/android -path '*apk*release*' -name '*.apk' | grep -i universal | head -n1 || true)"
