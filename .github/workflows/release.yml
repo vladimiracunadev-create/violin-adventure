@@ -228,3 +228,42 @@ jobs:
           name: "Mi Aventura con el Violín ${{ env.TAG_NAME }}"
           files: release-artifacts/*
           fail_on_unmatched_files: true
+
+  # ---------------------------------------------------------------------------
+  # Cierre: checksums de integridad y notas de la release generadas del CHANGELOG
+  # ---------------------------------------------------------------------------
+  finalize:
+    needs: [desktop, android]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Descargar los artefactos publicados
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p dist-assets
+          gh release download "${{ env.TAG_NAME }}" --dir dist-assets --skip-existing
+
+      - name: Generar SHA256SUMS.txt
+        working-directory: dist-assets
+        run: |
+          rm -f SHA256SUMS.txt
+          sha256sum * > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Publicar checksums y notas de la release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ env.TAG_NAME }}" dist-assets/SHA256SUMS.txt --clobber
+          node scripts/release-notes.mjs "${{ env.TAG_NAME }}" > notes.md
+          gh release edit "${{ env.TAG_NAME }}" --notes-file notes.md
