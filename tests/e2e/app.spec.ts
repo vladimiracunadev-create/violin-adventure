@@ -82,6 +82,44 @@ test("el metrónomo recorre el compás siguiendo el reloj de audio", async ({ pa
   await expect(disc).not.toHaveClass(/active/);
 });
 
+test("muestra el estado del dispositivo y permite desactivar el micrófono", async ({ page }) => {
+  await seed(page);
+  await page.goto("/");
+
+  // Los cuatro indicadores están siempre visibles y son accionables.
+  const chips = page.locator(".capability-chip");
+  await expect(chips).toHaveCount(4);
+  await expect(page.getByRole("button", { name: /Guardado local: Activo/ })).toBeVisible();
+
+  // Pulsar un indicador lleva al panel donde se gestionan.
+  await chips.first().click();
+  await expect(page.getByRole("heading", { name: "Requisitos y permisos" })).toBeVisible();
+  await expect(page.locator(".capability-row")).toHaveCount(4);
+
+  // Apagarlo desde el panel desactiva las funciones que lo necesitan. Se navega
+  // por la propia aplicación: un `goto` recargaría y `addInitScript` volvería a
+  // sembrar el progreso, descartando el cambio.
+  await page.locator(".capability-toggle input").uncheck();
+  await page.getByRole("button", { name: /Afinador/ }).click();
+  await expect(page.getByRole("button", { name: "Activar micrófono" })).toBeDisabled();
+  await expect(page.locator(".capability-hint")).toContainText("panel Familia");
+});
+
+test("la bienvenida ofrece activar el micrófono y deja seguir sin él", async ({ page }) => {
+  await page.addInitScript(() => localStorage.clear());
+  await page.goto("/");
+
+  const step = page.locator(".welcome-mic");
+  await expect(step).toBeVisible();
+  await expect(step).toContainText("nunca se graba ni se envía");
+  await expect(step).toContainText("Puedes omitirlo");
+
+  // Se puede completar la bienvenida sin conceder el micrófono.
+  await page.locator(".welcome-check input").check();
+  await page.getByRole("button", { name: "Entrar a mi aventura" }).click();
+  await expect(page.locator(".welcome-dialog")).toHaveCount(0);
+});
+
 test("el tema oscuro forzado aplica data-theme", async ({ page }) => {
   await seed(page, { theme: "dark" });
   await page.goto("/");

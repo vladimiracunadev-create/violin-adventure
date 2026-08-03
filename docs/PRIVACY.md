@@ -17,6 +17,10 @@ Solo en el dispositivo:
 
 El permiso se solicita al presionar “Activar micrófono”. Las muestras se procesan en memoria para estimar frecuencia. No se crea un archivo, no se conserva una grabación y no existe un servidor receptor.
 
+La primera configuración ofrece concederlo, explicando para qué sirve, y permite continuar sin él: es opcional y sin él solo se pierde la comprobación de afinación. Un indicador en la barra superior muestra en todo momento si está activo, y el panel familiar incluye un interruptor para desactivarlo dentro de la aplicación, de modo que no se vuelva a pedir.
+
+Cuando la aplicación solicita el permiso para comprobar su estado, libera el micrófono de inmediato: interesa la autorización, no capturar audio. Mantener el flujo abierto encendería el indicador de grabación del sistema sin motivo.
+
 ## Voz
 
 La lectura de instrucciones usa `SpeechSynthesis` del sistema cuando está disponible. La aplicación no envía el texto por su cuenta; el comportamiento exacto de las voces depende del sistema operativo instalado.

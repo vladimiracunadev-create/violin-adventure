@@ -48,6 +48,7 @@ La versión **1.2.1** comparte la misma base de código para web, Windows, Andro
 - Desafío auditivo y **modo drone** (sostener la nota) que comprueban localmente una nota.
 - **Canciones para tocar** con violín real y modo «Tocar conmigo» que verifica cada nota con el micrófono.
 - Metrónomo de 40 a 160 BPM con **pulso exacto** (agendado sobre el reloj de audio, sin deriva), compases de 2, 3 y 4 pulsos, corcheas, **tap-tempo** y **modo visual**.
+- **Estado del dispositivo siempre visible** (micrófono, sonido, voz y guardado local) con gestión en el panel familiar e interruptor propio de micrófono.
 - **Modo oscuro** (Sistema / Claro / Oscuro) y respeto de movimiento reducido.
 - **Gráfico de minutos por semana** en el panel familiar.
 - Temporizador recuperable de 5, 10, 15 o 20 minutos.

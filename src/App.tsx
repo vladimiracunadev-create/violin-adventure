@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { AchievementShelf } from "./components/AchievementShelf";
+import { CapabilityChips } from "./components/CapabilityChips";
+import { CapabilityPanel } from "./components/CapabilityPanel";
 import { OnboardingDialog } from "./components/OnboardingDialog";
 import { PwaNotices } from "./components/PwaNotices";
+import { useCapabilities } from "./hooks/useCapabilities";
 import { lessons, worlds } from "./data/curriculum";
 import { songs, NOTE_LABEL, type Song } from "./data/songs";
 import { ensureAudioReady, playClick, playViolinTone, preloadViolinStrings, scheduleClick, speakInstruction, startDrone, stopDrone } from "./lib/audio";
@@ -75,6 +78,7 @@ function App() {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const mainRef = useRef<HTMLElement | null>(null);
   const hasNavigatedRef = useRef(false);
+  const capabilities = useCapabilities();
 
   useEffect(() => saveProgress(progress), [progress]);
   useEffect(() => {
@@ -167,6 +171,7 @@ function App() {
           <span className="brand-mark">🎻</span>
           <span><strong>Mi Aventura con el Violín</strong><small>Aprender paso a paso</small></span>
         </button>
+        <CapabilityChips states={capabilities.states} onManage={() => setScreen("family")} />
         <div className="top-stats" aria-label="Resumen de progreso">
           <span title="Racha de práctica">🔥 {progress.streak}</span>
           <span title="Lecciones completadas">⭐ {completedCount}/{lessons.length}</span>
@@ -192,6 +197,7 @@ function App() {
         {screen === "tuner" && (
           <Tuner
             soundEnabled={progress.soundEnabled}
+            microphoneAllowed={progress.microphoneEnabled && capabilities.states.microphone !== "unsupported"}
             calibration={progress.tunerCalibration}
             onCalibrationChange={(value) => setProgress((current) => ({ ...current, tunerCalibration: value }))}
             onChallengeComplete={() => setProgress((current) => ({ ...current, pitchChallengesCompleted: current.pitchChallengesCompleted + 1 }))}
@@ -208,13 +214,21 @@ function App() {
         {screen === "songs" && (
           <Songs
             soundEnabled={progress.soundEnabled}
+            microphoneAllowed={progress.microphoneEnabled && capabilities.states.microphone !== "unsupported"}
             calibration={progress.tunerCalibration}
             songsCompleted={progress.songsCompleted}
             onSongComplete={() => setProgress((current) => ({ ...current, songsCompleted: current.songsCompleted + 1 }))}
           />
         )}
         {screen === "practice" && <PracticeTimer soundEnabled={progress.soundEnabled} onSave={savePractice} />}
-        {screen === "family" && <FamilyScreen progress={progress} achievements={achievements} setProgress={setProgress} />}
+        {screen === "family" && (
+          <FamilyScreen
+            progress={progress}
+            achievements={achievements}
+            setProgress={setProgress}
+            capabilities={capabilities}
+          />
+        )}
       </main>
 
       <nav className="bottom-nav" aria-label="Navegación principal">
@@ -235,7 +249,7 @@ function App() {
         />
       )}
       {!progress.onboardingCompleted && (
-        <OnboardingDialog onComplete={(name, weeklyGoalMinutes) => setProgress((current) => ({
+        <OnboardingDialog states={capabilities.states} onRequestMicrophone={capabilities.request} onComplete={(name, weeklyGoalMinutes) => setProgress((current) => ({
           ...current,
           onboardingCompleted: true,
           childName: name,
@@ -368,8 +382,8 @@ function LessonDialog({ lesson, isCompleted, soundEnabled, onClose, onComplete }
   );
 }
 
-function Tuner({ soundEnabled, calibration, onCalibrationChange, onChallengeComplete }: {
-  soundEnabled: boolean; calibration: number; onCalibrationChange: (value: number) => void; onChallengeComplete: () => void;
+function Tuner({ soundEnabled, microphoneAllowed, calibration, onCalibrationChange, onChallengeComplete }: {
+  soundEnabled: boolean; microphoneAllowed: boolean; calibration: number; onCalibrationChange: (value: number) => void; onChallengeComplete: () => void;
 }) {
   const [listening, setListening] = useState(false);
   const [mode, setMode] = useState<"chromatic" | "strings">("chromatic");
@@ -483,7 +497,8 @@ function Tuner({ soundEnabled, calibration, onCalibrationChange, onChallengeComp
           <div className={`tuner-status ${pitch && Math.abs(pitch.cents) <= 5 ? "in-tune" : ""}`}><small>{status}</small><strong>{pitch?.noteName ?? "—"}</strong><span>{pitch ? `${pitch.scientific} · ${pitch.frequency.toFixed(1)} Hz · ${pitch.cents > 0 ? "+" : ""}${pitch.cents.toFixed(0)} cents` : message}</span></div>
           <div className="tuner-scale" aria-label="Desviación de afinación"><div className="scale-line" /><div className="scale-center" /><div className="needle" style={{ transform: `translateX(${cents * 3}px)` }} /><span className="flat">♭ baja</span><span className="sharp">alta ♯</span></div>
           <div className="pitch-history" aria-label="Historial reciente de estabilidad">{history.length === 0 ? <small>El historial aparecerá al tocar.</small> : history.map((value, index) => <i key={`${index}-${value}`} style={{ height: `${Math.max(4, 42 - Math.abs(value) * 0.7)}px` }} title={`${value.toFixed(0)} cents`} />)}</div>
-          <button className={listening ? "secondary-button danger" : "primary-button"} onClick={() => listening ? void stopListening() : void startListening()}>{listening ? "Detener micrófono" : "Activar micrófono"}</button>
+          <button className={listening ? "secondary-button danger" : "primary-button"} disabled={!microphoneAllowed} onClick={() => listening ? void stopListening() : void startListening()}>{listening ? "Detener micrófono" : "Activar micrófono"}</button>
+          {!microphoneAllowed && <small className="capability-hint">🎤 El micrófono está desactivado. Actívalo en el panel Familia → Requisitos y permisos.</small>}
         </article>
 
         <div className="tool-side-stack">
@@ -733,8 +748,8 @@ function PracticeTimer({ soundEnabled, onSave }: { soundEnabled: boolean; onSave
   );
 }
 
-function Songs({ soundEnabled, calibration, songsCompleted, onSongComplete }: {
-  soundEnabled: boolean; calibration: number; songsCompleted: number; onSongComplete: () => void;
+function Songs({ soundEnabled, microphoneAllowed, calibration, songsCompleted, onSongComplete }: {
+  soundEnabled: boolean; microphoneAllowed: boolean; calibration: number; songsCompleted: number; onSongComplete: () => void;
 }) {
   const [song, setSong] = useState<Song>(songs[0]);
   const [mode, setMode] = useState<"idle" | "listening" | "playalong">("idle");
@@ -858,12 +873,13 @@ function Songs({ soundEnabled, calibration, songsCompleted, onSongComplete }: {
           {mode === "idle" ? (
             <>
               <button className="primary-button" disabled={!soundEnabled} onClick={() => void listen()}>▶ Escuchar</button>
-              <button className="secondary-button" onClick={() => void playAlong()}>🎻 Tocar conmigo</button>
+              <button className="secondary-button" disabled={!microphoneAllowed} onClick={() => void playAlong()}>🎻 Tocar conmigo</button>
             </>
           ) : (
             <button className="secondary-button danger" onClick={stop}>⏹ Detener</button>
           )}
         </div>
+        {!microphoneAllowed && <p className="capability-hint">🎤 «Tocar conmigo» necesita el micrófono. Actívalo en el panel Familia → Requisitos y permisos.</p>}
         {mode === "playalong" && <p className="song-hint">🎤 Toca la nota iluminada. El micrófono se usa en tiempo real y nunca se graba.</p>}
       </article>
       <p className="assistive-message song-count">🎵 {songsCompleted} {songsCompleted === 1 ? "canción completada" : "canciones completadas"}</p>
@@ -900,10 +916,11 @@ function WeeklyChart({ sessions, goal }: { sessions: ProgressState["practiceSess
   );
 }
 
-function FamilyScreen({ progress, achievements, setProgress }: {
+function FamilyScreen({ progress, achievements, setProgress, capabilities }: {
   progress: ProgressState;
   achievements: Achievement[];
   setProgress: Dispatch<SetStateAction<ProgressState>>;
+  capabilities: ReturnType<typeof useCapabilities>;
 }) {
   const [importMessage, setImportMessage] = useState("");
   const [unlocked, setUnlocked] = useState(() => !progress.familyPin);
@@ -984,6 +1001,13 @@ function FamilyScreen({ progress, achievements, setProgress }: {
         </article>
       ) : (
         <div className="family-grid">
+          <CapabilityPanel
+            states={capabilities.states}
+            microphoneEnabled={progress.microphoneEnabled}
+            onToggleMicrophone={(value) => setProgress((current) => ({ ...current, microphoneEnabled: value }))}
+            onRequest={capabilities.request}
+            onRefresh={capabilities.refresh}
+          />
           <article className="card settings-card">
             <div className="settings-heading"><h2>Perfil local</h2>{progress.familyPin && <button className="text-button" onClick={() => setUnlocked(false)}>🔒 Bloquear ahora</button>}</div>
             <label>Nombre o apodo<input type="text" value={progress.childName} maxLength={24} onChange={(event: { target: HTMLInputElement }) => setProgress((current) => ({ ...current, childName: event.target.value || "Violinista" }))} /></label>

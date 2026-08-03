@@ -63,6 +63,8 @@ export interface ProgressState {
   largeText: boolean;
   theme: ThemePreference;
   soundEnabled: boolean;
+  /** Permite al adulto desactivar el micrófono sin tocar los ajustes del sistema. */
+  microphoneEnabled: boolean;
   weeklyGoalMinutes: number;
   tunerCalibration: number;
   pitchChallengesCompleted: number;

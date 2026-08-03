@@ -7,6 +7,15 @@ export function getAudioContext(): AudioContext {
   return sharedContext;
 }
 
+/**
+ * Estado del audio sin crear un contexto: `idle` es que todavía no hizo falta.
+ * Se usa para informar del estado en pantalla sin provocar efectos secundarios.
+ */
+export function peekAudioState(): "unsupported" | "idle" | AudioContextState {
+  if (typeof AudioContext === "undefined") return "unsupported";
+  return sharedContext ? sharedContext.state : "idle";
+}
+
 export async function ensureAudioReady(): Promise<AudioContext> {
   const context = getAudioContext();
   if (context.state === "suspended") await context.resume();

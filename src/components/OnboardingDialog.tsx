@@ -1,13 +1,26 @@
 import { useState } from "react";
 import { useModalA11y } from "../hooks/useModalA11y";
+import { CAPABILITIES, stateLabel, type CapabilityState, type CapabilityStates } from "../lib/capabilities";
 
-export function OnboardingDialog({ onComplete }: {
+const MICROPHONE = CAPABILITIES[0];
+
+export function OnboardingDialog({ states, onRequestMicrophone, onComplete }: {
+  states: CapabilityStates;
+  onRequestMicrophone: () => Promise<CapabilityState>;
   onComplete: (name: string, weeklyGoalMinutes: number) => void;
 }) {
   const [name, setName] = useState("");
   const [weeklyGoal, setWeeklyGoal] = useState(45);
   const [adultSupport, setAdultSupport] = useState(false);
+  const [asking, setAsking] = useState(false);
   const dialogRef = useModalA11y<HTMLElement>();
+  const microphone = states.microphone;
+
+  async function askMicrophone() {
+    setAsking(true);
+    await onRequestMicrophone();
+    setAsking(false);
+  }
 
   return (
     <div className="dialog-backdrop welcome-backdrop" role="presentation">
@@ -23,6 +36,26 @@ export function OnboardingDialog({ onComplete }: {
           <div><strong>2</strong><span>Sin publicidad ni competencia</span></div>
           <div><strong>3</strong><span>Con apoyo de una persona adulta o profesora</span></div>
         </div>
+        <section className={`welcome-mic is-${microphone}`} aria-labelledby="welcome-mic-title">
+          <h2 id="welcome-mic-title"><span aria-hidden="true">{MICROPHONE.icon}</span> Micrófono <em>· opcional</em></h2>
+          <p>{MICROPHONE.purpose}</p>
+          <p className="welcome-mic-note">Se analiza en el momento y <strong>nunca se graba ni se envía</strong>. Sin él, {MICROPHONE.missing.charAt(0).toLowerCase()}{MICROPHONE.missing.slice(1)}</p>
+          <div className="welcome-mic-action">
+            {microphone === "active" ? (
+              <span className="welcome-mic-ok" role="status">✓ Micrófono activado</span>
+            ) : microphone === "unsupported" ? (
+              <span className="welcome-mic-ko" role="status">Este dispositivo no tiene micrófono disponible.</span>
+            ) : microphone === "blocked" ? (
+              <span className="welcome-mic-ko" role="status">Denegado por el sistema. Puedes activarlo más tarde en los ajustes del dispositivo.</span>
+            ) : (
+              <button type="button" className="secondary-button" onClick={() => void askMicrophone()} disabled={asking}>
+                {asking ? "Pidiendo permiso…" : "Activar micrófono"}
+              </button>
+            )}
+            <small>Estado: {stateLabel(microphone)}. Puedes omitirlo y cambiarlo cuando quieras en el panel Familia.</small>
+          </div>
+        </section>
+
         <form onSubmit={(event: { preventDefault(): void }) => {
           event.preventDefault();
           if (!adultSupport) return;

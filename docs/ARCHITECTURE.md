@@ -17,6 +17,7 @@ Dominio TypeScript
 ├── curriculum.ts
 ├── pitch.ts y audio.ts
 ├── metronome.ts
+├── capabilities.ts
 ├── storage.ts y practiceTimer.ts
 ├── familyPin.ts
 └── achievements.ts
@@ -65,6 +66,36 @@ El pulso no se marca con `setInterval`: ese temporizador acumula deriva y el nav
 ### Desafío de nota
 
 El desafío exige una nota MIDI coincidente y una desviación máxima de 15 cents durante varias detecciones consecutivas. Es una actividad motivacional, no una evaluación docente ni una medición acústica certificada.
+
+## Requisitos del dispositivo
+
+`capabilities.ts` declara lo que la aplicación necesita y en qué estado está:
+micrófono, salida de sonido, voz del dispositivo y guardado local. **Solo el
+micrófono pide permiso al sistema**; no se usa cámara ni ubicación, y una prueba
+del propio módulo lo verifica para que no se añadan sin querer.
+
+Cada estado distingue cuatro situaciones, porque no todas significan lo mismo
+para la familia:
+
+| Estado | Significado |
+| --- | --- |
+| `active` | Disponible y en uso. |
+| `prompt` | Disponible, aún sin activar. El audio espera el primer gesto. |
+| `blocked` | Denegado por el sistema. La aplicación no puede reconcederlo: hay que ir a los ajustes del dispositivo. |
+| `unsupported` | El dispositivo o navegador no lo admite. |
+
+Solo `blocked` y `unsupported` cuentan como carencia real. Tratar `prompt` como
+fallo produciría una alarma en falso nada más abrir la aplicación, cuando el
+contexto de audio todavía no ha arrancado.
+
+El estado se refresca ante los avisos del propio sistema —`permissions.onchange`
+del micrófono, `voiceschanged` de las voces— y tras cualquier gesto, que es
+cuando el audio puede pasar a `running`. No hay sondeo periódico: gastaría
+batería sin aportar nada.
+
+`microphoneEnabled` es una preferencia de la aplicación, distinta del permiso del
+sistema: permite al adulto desactivar el micrófono sin tocar los ajustes del
+dispositivo, y evita que se vuelva a pedir.
 
 ## Persistencia
 

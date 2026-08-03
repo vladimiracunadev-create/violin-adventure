@@ -432,6 +432,55 @@ select { font: inherit; }
 .badges-card { margin-top: 20px; }
 .badges-card h2 { margin: 6px 0 16px; }
 
+/* Estado del dispositivo: indicadores de la barra superior y panel de gestión. */
+.capability-chips { display: flex; gap: 6px; margin-left: auto; }
+.capability-chip { display: inline-flex; align-items: center; gap: 2px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 9px; background: var(--surface); font-size: .85rem; line-height: 1; cursor: pointer; }
+.capability-chip .capability-mark { font-weight: 900; font-size: .72rem; }
+.capability-chip.is-active { border-color: color-mix(in srgb, var(--teal) 45%, var(--line)); color: var(--teal); }
+.capability-chip.is-prompt { border-color: color-mix(in srgb, var(--yellow) 55%, var(--line)); color: #8a5a00; }
+.capability-chip.is-blocked, .capability-chip.is-unsupported { border-color: color-mix(in srgb, var(--coral) 45%, var(--line)); color: var(--coral); }
+.capability-chip.is-checking { color: var(--muted); }
+.capability-chip:hover { border-color: var(--purple); }
+
+.capability-card { grid-column: 1 / -1; }
+.capability-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+.capability-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; border: 1px solid var(--line); border-left: 4px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+.capability-row.is-active { border-left-color: var(--teal); }
+.capability-row.is-prompt { border-left-color: var(--yellow); }
+.capability-row.is-blocked, .capability-row.is-unsupported { border-left-color: var(--coral); }
+.capability-icon { font-size: 1.5rem; }
+.capability-text { display: grid; gap: 2px; }
+.capability-text small { color: var(--muted); }
+.capability-optional { color: var(--muted); font-style: normal; font-weight: 700; font-size: .82rem; }
+.capability-state { font-size: .78rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }
+.capability-state.is-active { color: var(--teal); }
+.capability-state.is-prompt { color: #8a5a00; }
+.capability-state.is-blocked, .capability-state.is-unsupported { color: var(--coral); }
+.capability-state.is-checking { color: var(--muted); }
+.capability-toggle { display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 10px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.capability-toggle span { display: grid; gap: 2px; }
+.capability-toggle small { color: var(--muted); }
+.capability-actions { margin-top: 14px; }
+.capability-message { margin-top: 10px; font-weight: 700; }
+.capability-hint { display: block; margin-top: 10px; color: var(--muted); font-size: .88rem; }
+
+.welcome-mic { margin: 18px 0 0; padding: 14px 16px; border: 1px solid var(--line); border-left: 4px solid var(--yellow); border-radius: 14px; text-align: left; }
+.welcome-mic.is-active { border-left-color: var(--teal); }
+.welcome-mic.is-blocked, .welcome-mic.is-unsupported { border-left-color: var(--coral); }
+.welcome-mic h2 { margin: 0 0 6px; font-size: 1.05rem; }
+.welcome-mic h2 em { color: var(--muted); font-style: normal; font-weight: 700; font-size: .85rem; }
+.welcome-mic p { margin: 0 0 6px; font-size: .9rem; }
+.welcome-mic-note { color: var(--muted); }
+.welcome-mic-action { display: grid; gap: 6px; margin-top: 10px; }
+.welcome-mic-action small { color: var(--muted); }
+.welcome-mic-ok { color: var(--teal); font-weight: 900; }
+.welcome-mic-ko { color: var(--coral); font-weight: 800; font-size: .9rem; }
+
+@media (max-width: 900px) {
+  .capability-chips { order: 3; width: 100%; margin-left: 0; justify-content: center; }
+  .topbar { flex-wrap: wrap; }
+}
+
 @media (max-width: 620px) {
   .notice { align-items: stretch; flex-direction: column; gap: 6px; }
   .notice button { align-self: center; }
@@ -439,4 +488,6 @@ select { font: inherit; }
   .welcome-points div { grid-template-columns: auto 1fr; align-items: center; justify-items: start; text-align: left; }
   .pin-fields { grid-template-columns: 1fr; }
   .achievement-shelf { grid-template-columns: repeat(2, 1fr); }
+  .capability-row { grid-template-columns: auto 1fr; }
+  .capability-row button { grid-column: 1 / -1; }
 }

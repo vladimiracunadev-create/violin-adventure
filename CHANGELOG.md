@@ -1,5 +1,30 @@
 # Historial de cambios
 
+## No publicado
+
+### Añadido
+
+- **Estado del dispositivo siempre visible.** Cuatro indicadores en la barra
+  superior (🎤 micrófono, 🔊 sonido, 🗣️ voz del dispositivo, 💾 guardado local)
+  muestran de un vistazo qué está activo. Pulsar cualquiera lleva al panel donde
+  se gestionan.
+- **Paso de micrófono en la primera configuración**: explica para qué se usa,
+  permite concederlo ahí mismo y deja continuar sin él. Es opcional a propósito:
+  las lecciones, el metrónomo y las canciones funcionan igual.
+- **Panel «Requisitos y permisos»** en la sección Familia, con el estado de cada
+  elemento, qué se pierde si falta y qué hacer para arreglarlo. Cuando el sistema
+  tiene el micrófono denegado se indica que hay que cambiarlo en los ajustes del
+  dispositivo, porque una aplicación no puede reconceder un permiso denegado.
+- **Interruptor de micrófono propio de la aplicación**: al apagarlo, el afinador
+  y «Tocar conmigo» quedan desactivados con un aviso claro y no se vuelve a pedir
+  permiso al sistema.
+
+### Nota sobre privacidad
+
+No se añadió ningún permiso nuevo. La aplicación sigue **sin usar cámara ni
+ubicación**, y el micrófono continúa siendo el único permiso del sistema. Los
+indicadores solo informan de lo que ya se usaba.
+
 ## 1.2.1 — 2026-08-03
 
 ### Corregido
