@@ -7,6 +7,29 @@
 
 ## Firma de Android en CI
 
+> ## ⚠️ PENDIENTE — la clave permanente no está configurada
+>
+> **Estado actual:** el repositorio no tiene los secrets del keystore, así que
+> cada release firma el APK con una clave nueva y desechable.
+>
+> **Qué provoca:** ninguna versión se puede instalar sobre otra. Cada
+> actualización obliga a desinstalar, y desinstalar **borra el progreso** de la
+> niña: racha, insignias, lecciones completadas e historial de práctica.
+>
+> **Cómo convivir con ello mientras tanto:** el procedimiento de exportar el
+> respaldo, desinstalar, instalar e importar está en la
+> [guía para familias](PARENT_GUIDE.md#actualizar-la-aplicación-en-android).
+>
+> **Cómo resolverlo:** los cuatro pasos están más abajo, en
+> [«Configurar la clave permanente»](#configurar-la-clave-permanente). Es una
+> configuración de una sola vez, de unos cinco minutos. Después no se vuelve a
+> tocar y las actualizaciones se instalan encima sin perder nada.
+>
+> **Por qué merece la pena hacerlo pronto:** cada versión que se publique sin la
+> clave añade otra reinstalación con pérdida de datos. Y a partir del momento en
+> que se configure, las instalaciones anteriores seguirán necesitando **una**
+> desinstalación más — no se puede evitar de forma retroactiva.
+
 ### Para qué sirve la clave de firma
 
 Android exige que toda aplicación esté firmada. La firma no cifra ni protege el
@@ -40,35 +63,92 @@ El flujo `release.yml` firma el APK automáticamente:
   terminar. Cada versión queda firmada con una clave distinta, así que **ninguna
   puede instalarse sobre otra** ni publicarse en Google Play. Solo sirve para
   probar una primera versión suelta. El flujo emite un aviso cuando ocurre.
-- **Con keystore persistente (recomendado):** define estos secrets del repositorio
-  (`Ajustes > Secrets and variables > Actions`) para firmar siempre con la misma clave:
+- **Con keystore persistente (recomendado, sin configurar todavía):** el flujo usa
+  siempre la misma clave, tomada de cuatro secrets del repositorio.
 
-  | Secret | Contenido |
-  | --- | --- |
-  | `ANDROID_KEYSTORE_BASE64` | Keystore `.jks` codificado en base64 |
-  | `ANDROID_KEY_ALIAS` | Alias de la clave dentro del keystore |
-  | `ANDROID_STORE_PASSWORD` | Contraseña del keystore |
-  | `ANDROID_KEY_PASSWORD` | Contraseña de la clave |
+### Configurar la clave permanente
 
-  Para generar el keystore una sola vez y codificarlo:
+Una sola vez, unos cinco minutos. Los cuatro secrets que hay que dejar creados:
 
-  ```bash
-  keytool -genkeypair -v -keystore release.jks -alias violin \
-    -keyalg RSA -keysize 2048 -validity 10000
-  base64 -w0 release.jks   # copia el resultado en ANDROID_KEYSTORE_BASE64
-  ```
+| Secret | Contenido |
+| --- | --- |
+| `ANDROID_KEYSTORE_BASE64` | Keystore `.jks` codificado en base64 |
+| `ANDROID_KEY_ALIAS` | Alias de la clave dentro del keystore |
+| `ANDROID_STORE_PASSWORD` | Contraseña del keystore |
+| `ANDROID_KEY_PASSWORD` | Contraseña de la clave |
 
-  En Windows (PowerShell), `base64` no existe y `keytool` suele venir con Android
-  Studio:
+#### 1. Generar el keystore
 
-  ```powershell
-  & "$env:LOCALAPPDATA\Programs\Android Studio\jbr\bin\keytool.exe" -genkeypair -v -keystore release.jks -alias violin -keyalg RSA -keysize 2048 -validity 10000
-  [Convert]::ToBase64String([IO.File]::ReadAllBytes("release.jks")) | Set-Clipboard
-  ```
+En Linux o macOS:
 
-  Guarda `release.jks` en un lugar seguro y **nunca** lo subas al repositorio.
-  Si se pierde, no hay forma de volver a firmar con esa clave: todas las
-  instalaciones existentes quedan sin ruta de actualización.
+```bash
+keytool -genkeypair -v -keystore release.jks -alias violin \
+  -keyalg RSA -keysize 2048 -validity 10000
+```
+
+En Windows, `keytool` viene con Android Studio y no está en el `PATH`. Conviene
+añadirlo a la sesión en lugar de llamarlo por su ruta entre comillas: en
+PowerShell, una ruta entrecomillada al principio de una línea se interpreta como
+texto y falla con `Token inesperado`, salvo que se anteponga el operador `&`.
+
+```powershell
+$env:Path = "C:\Program Files\Android\Android Studio\jbr\bin;$env:Path"
+keytool -genkeypair -v -keystore release.jks -alias violin -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Pedirá una contraseña (anótala) y unos datos de identificación. Con el formato
+por defecto (PKCS12) la contraseña de la clave es la misma que la del almacén, así
+que los dos secrets de contraseña llevan el mismo valor.
+
+No pases la contraseña con `-storepass`: quedaría guardada en el historial del
+intérprete en texto plano.
+
+#### 2. Crear los secrets
+
+La vía más fiable es la CLI de GitHub, porque el formulario web es fácil de dejar
+a medias (hay que pulsar **Add secret** al final, y la pestaña correcta es
+*Secrets*, no *Variables*).
+
+```powershell
+gh secret set ANDROID_KEY_ALIAS --body violin
+```
+
+```powershell
+gh secret set ANDROID_KEYSTORE_BASE64 --body ([Convert]::ToBase64String([IO.File]::ReadAllBytes("$env:USERPROFILE\Documents\release.jks")))
+```
+
+> La ruta del keystore debe ser **absoluta**. `[IO.File]` es .NET y no sigue el
+> `cd` de PowerShell: resuelve las rutas relativas contra el directorio donde
+> arrancó el proceso, no contra la ubicación actual.
+
+Las dos contraseñas, en modo interactivo, para que no queden en el historial
+(cada comando responde `Paste your secret:`):
+
+```powershell
+gh secret set ANDROID_STORE_PASSWORD
+```
+
+```powershell
+gh secret set ANDROID_KEY_PASSWORD
+```
+
+#### 3. Comprobar que quedaron guardados
+
+```bash
+gh secret list
+```
+
+Deben aparecer los cuatro. Si la lista sale vacía, no se guardaron: repite el
+paso 2. Conviene comprobarlo también en los otros sitios donde suelen acabar por
+error —secrets de entorno, de Dependabot o la pestaña *Variables*—, porque el
+flujo solo lee los **secrets de repositorio**.
+
+#### 4. Guardar el archivo
+
+Guarda `release.jks` fuera del repositorio y con copia de respaldo. Es la
+identidad de la aplicación: quien lo tenga puede publicar actualizaciones. Si se
+pierde, no hay forma de volver a firmar con esa clave y **todas las instalaciones
+existentes quedan sin ruta de actualización**, de forma irreversible.
 
 ### Comprobar con qué clave está firmado un APK
 

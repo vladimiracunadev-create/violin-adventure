@@ -19,17 +19,19 @@
   y «Tocar conmigo» quedan desactivados con un aviso claro y no se vuelve a pedir
   permiso al sistema.
 
-### Distribución
+### Limitación conocida en Android
 
-- **Firma de Android permanente.** Hasta la 1.2.1, cada compilación generaba una
-  clave de firma nueva y la descartaba, así que Android veía cada versión como
-  obra de un autor distinto y rechazaba instalarla sobre la anterior: había que
-  desinstalar, y desinstalar borra el progreso guardado en el dispositivo. Con un
-  keystore persistente en los secrets del repositorio, todas las versiones se
-  firman con la misma clave y las actualizaciones se instalan encima sin perder
-  racha, insignias ni historial. Quien tenga la 1.2.0 o la 1.2.1 necesita una
-  última reinstalación; conviene exportar el respaldo desde el panel Familia
-  antes. El porqué queda explicado en [docs/BUILD_MOBILE.md](docs/BUILD_MOBILE.md).
+**Esta versión no se puede instalar encima de una anterior.** Hay que desinstalar
+primero, y desinstalar borra el progreso guardado en el dispositivo.
+
+El motivo es que el repositorio todavía no tiene configurada una clave de firma
+permanente, así que cada compilación genera una distinta y Android rechaza la
+actualización por no reconocer al autor. Está pendiente de resolver y explicado
+en [docs/BUILD_MOBILE.md](docs/BUILD_MOBILE.md).
+
+Para no perder la racha, las insignias ni el historial, sigue el procedimiento de
+la [guía para familias](docs/PARENT_GUIDE.md#actualizar-la-aplicación-en-android):
+exportar el respaldo antes de desinstalar e importarlo después.
 
 ### Nota sobre privacidad
 

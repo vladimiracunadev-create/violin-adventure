@@ -37,6 +37,31 @@ El PIN es una barrera local sencilla. No protege frente a una persona con acceso
 
 Exporta el progreso después de cada semana importante o antes de cambiar de dispositivo. Guarda el archivo JSON en una ubicación administrada por una persona adulta. La aplicación no mantiene copias en un servidor.
 
+## Actualizar la aplicación en Android
+
+> ⚠️ **Por ahora, instalar una versión nueva obliga a desinstalar la anterior, y
+> al desinstalar se borra el progreso.** Exporta el respaldo antes. Es una
+> limitación temporal que se resolverá; mientras tanto, estos cinco pasos evitan
+> cualquier pérdida.
+
+1. **Antes de desinstalar nada**, abre la aplicación que ya tienes y ve al panel
+   **Familia → Exportar respaldo**. Se descarga un archivo `.json`.
+2. Comprueba que el archivo existe y ponlo en un sitio seguro (por ejemplo,
+   envíatelo por correo o cópialo a otra carpeta). Si este paso falla, **no
+   continúes**.
+3. Desinstala la aplicación como cualquier otra, desde los ajustes del teléfono.
+4. Instala el `.apk` nuevo. Android pedirá permitir «instalar aplicaciones
+   desconocidas» la primera vez.
+5. Abre la aplicación y ve a **Familia → Importar respaldo**. Selecciona el
+   archivo del paso 1. Vuelven la racha, las insignias, las lecciones completadas
+   y el historial de práctica.
+
+Si al instalar aparece «aplicación no instalada», casi siempre es que la versión
+anterior sigue ahí: desinstálala del todo y repite el paso 4.
+
+En Windows no ocurre nada de esto: el instalador reemplaza la versión anterior y
+conserva el progreso.
+
 ## Cuándo consultar
 
 Solicita ayuda docente o técnica ante dolor, postura difícil de mantener, puente inclinado, clavijas trabadas, cuerdas rotas, dudas sobre mentonera u hombrera o dificultad persistente para producir un sonido estable.

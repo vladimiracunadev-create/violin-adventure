@@ -58,6 +58,13 @@ La versión **1.3.0** comparte la misma base de código para web, Windows, Andro
 - PWA con aviso de instalación, actualización y funcionamiento sin conexión.
 - Sin publicidad, analítica, cuenta ni servidor.
 
+> **Android — limitación conocida:** esta versión no se instala sobre una anterior.
+> Hay que desinstalar primero, y eso borra el progreso guardado. **Exporta el
+> respaldo desde el panel Familia antes de desinstalar** e impórtalo después: el
+> procedimiento está en la [guía para familias](docs/PARENT_GUIDE.md#actualizar-la-aplicación-en-android).
+> Se resolverá configurando la clave de firma permanente ([cómo](docs/BUILD_MOBILE.md#configurar-la-clave-permanente)).
+> En Windows no ocurre: el instalador reemplaza la versión anterior y conserva el progreso.
+
 ## Descargar e instalar
 
 Los instaladores se generan automáticamente en GitHub Actions y se publican en la

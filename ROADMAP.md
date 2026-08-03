@@ -10,9 +10,10 @@
   de para qué se usa.
 - **Panel «Requisitos y permisos»** en Familia e interruptor propio de micrófono.
 - Sin permisos nuevos: se mantiene sin cámara ni ubicación.
-- **Keystore de Android persistente**: las actualizaciones se instalan sobre la
-  versión anterior sin borrar el progreso. Hasta la 1.2.1 cada release se firmaba
-  con una clave distinta y obligaba a desinstalar.
+> **Limitación conocida:** en Android esta versión no se instala sobre una
+> anterior; hay que desinstalar, y eso borra el progreso. Falta configurar la
+> clave de firma permanente (ver abajo). El procedimiento para no perder nada
+> está en la [guía para familias](docs/PARENT_GUIDE.md#actualizar-la-aplicación-en-android).
 
 ### 1.2.1 — Exactitud del pulso
 
@@ -45,6 +46,18 @@
 - Landing page en GitHub Pages.
 
 ## Planificado
+
+### Pendiente inmediato — Clave de firma de Android
+
+Sin ella, **cada versión nueva obliga a desinstalar la anterior y borra el
+progreso**: racha, insignias, lecciones completadas e historial. Es lo primero
+que conviene resolver, porque cada release publicada mientras tanto añade otra
+reinstalación con pérdida de datos.
+
+Es una configuración de una sola vez, de unos cinco minutos, con los pasos en
+[docs/BUILD_MOBILE.md](docs/BUILD_MOBILE.md#configurar-la-clave-permanente). No
+se puede aplicar de forma retroactiva: las instalaciones anteriores necesitarán
+igualmente una última desinstalación.
 
 ### 1.4 — Alcance y hábitos
 
