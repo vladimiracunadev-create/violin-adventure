@@ -20,7 +20,7 @@
 </div>
 
 Multiplataforma para acompañar a una niña de 10 años en sus primeros pasos con el violín.
-La versión **1.2.1** comparte la misma base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.
+La versión **1.3.0** comparte la misma base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.
 
 > La aplicación complementa, pero no reemplaza, la observación de una profesora o profesor de violín. La postura, el tamaño del instrumento, la hombrera, la mentonera y la afinación de los dedos requieren revisión humana.
 
@@ -156,7 +156,7 @@ pnpm desktop:build
 
 En Linux se generan `.deb`, `.AppImage` y `.rpm`; en macOS un `.dmg`. Para un `.dmg`
 universal (Intel + Apple Silicon): `pnpm tauri build --target universal-apple-darwin`.
-En la práctica basta con etiquetar la versión (`v1.2.1`) y dejar que GitHub Actions los compile.
+En la práctica basta con etiquetar la versión (`v1.3.0`) y dejar que GitHub Actions los compile.
 Las pruebas E2E se ejecutan con `pnpm test:e2e` (Playwright).
 
 ## Android e iOS
@@ -225,7 +225,7 @@ violin-adventure/
 
 ## Estado real
 
-**1.2.1 — metrónomo exacto y detección de tono más liviana.**
+**1.3.0 — requisitos del dispositivo visibles y gestionables.**
 
 La aplicación contiene una experiencia funcional, una arquitectura preparada para distribución y compilación automática de instaladores para Windows, Android, Linux y macOS mediante GitHub Actions. Aunque técnicamente es una versión estable y publicable, todavía no se considera un método pedagógico validado ni un producto aprobado para las tiendas oficiales hasta completar revisión docente, pruebas con familias, auditoría de accesibilidad, ensayos acústicos e instalación en dispositivos reales.
 

@@ -48,7 +48,7 @@ Dos APK firmados con claves distintas no se pueden instalar uno sobre otro. Para
 comparar la huella del certificado:
 
 ```bash
-keytool -printcert -jarfile MiAventuraConElViolin-1.2.1.apk
+keytool -printcert -jarfile MiAventuraConElViolin-<version>.apk
 ```
 
 Si la línea `SHA256:` cambia entre dos versiones, la actualización en el

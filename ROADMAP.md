@@ -2,7 +2,16 @@
 
 ## Publicado
 
-### 1.2.1 — Exactitud del pulso (actual)
+### 1.3 — Requisitos del dispositivo (actual)
+
+- **Estado siempre visible** de micrófono, sonido, voz del dispositivo y guardado
+  local, con indicadores en la barra superior.
+- **Paso de micrófono en la primera configuración**, opcional y con explicación
+  de para qué se usa.
+- **Panel «Requisitos y permisos»** en Familia e interruptor propio de micrófono.
+- Sin permisos nuevos: se mantiene sin cámara ni ubicación.
+
+### 1.2.1 — Exactitud del pulso
 
 - **Metrónomo sin deriva**: los clics se agendan sobre el reloj de `AudioContext`
   con anticipación, en lugar de dispararse desde `setInterval`. El pulso se
@@ -34,7 +43,7 @@
 
 ## Planificado
 
-### 1.3 — Alcance y hábitos
+### 1.4 — Alcance y hábitos
 
 - **Internacionalización (es / en / pt)**: interfaz y currículo traducidos y verificados.
 - **Perfiles múltiples** (hermanos) en un mismo dispositivo, con migración de esquema.
@@ -42,7 +51,7 @@
 - **PWA jugable** publicada en GitHub Pages para probar sin instalar.
 - **Auditoría Lighthouse/PWA** en CI.
 
-### 1.4 — Interactividad musical
+### 1.5 — Interactividad musical
 
 - Reconocimiento de ataques, duración y ritmo; lectura a primera vista.
 - `AudioWorklet` para análisis fuera del hilo visual.
