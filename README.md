@@ -2,12 +2,26 @@
 
 # 🎻 Mi Aventura con el Violín
 
-**Aplicación educativa, privada y sin publicidad para aprender violín desde los 10 años.**
+## **24 lecciones · 6 mundos · afinador, metrónomo y canciones con violín real**
 
-[![Release](https://img.shields.io/github/v/release/vladimiracunadev-create/violin-adventure?label=versi%C3%B3n&color=6d4aff)](https://github.com/vladimiracunadev-create/violin-adventure/releases/latest)
+**Aplicación educativa, privada y sin publicidad para aprender violín desde los 10 años. Una sola base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.**
+
 [![CI](https://github.com/vladimiracunadev-create/violin-adventure/actions/workflows/ci.yml/badge.svg)](https://github.com/vladimiracunadev-create/violin-adventure/actions/workflows/ci.yml)
 [![Release multiplataforma](https://github.com/vladimiracunadev-create/violin-adventure/actions/workflows/release.yml/badge.svg)](https://github.com/vladimiracunadev-create/violin-adventure/actions/workflows/release.yml)
-[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-19a99b)](LICENSE)
+
+[![Versión](https://img.shields.io/github/v/release/vladimiracunadev-create/violin-adventure?label=versi%C3%B3n&color=6d4aff&style=for-the-badge)](CHANGELOG.md)
+[![Lecciones](https://img.shields.io/badge/lecciones-24%20·%206%20mundos-7c5cff?style=for-the-badge)](docs/CURRICULUM.md)
+[![Pruebas](https://img.shields.io/badge/pruebas-41%20unitarias%20+%207%20E2E-007c83?style=for-the-badge)](#-verificar)
+[![Privacidad](https://img.shields.io/badge/telemetría-cero-3fb950?style=for-the-badge)](docs/PRIVACY.md)
+[![Licencia](https://img.shields.io/badge/licencia-MIT-19a99b?style=for-the-badge)](LICENSE)
+
+[⬇️ Descargar](https://github.com/vladimiracunadev-create/violin-adventure/releases/latest) ·
+[🌐 Landing](https://vladimiracunadev-create.github.io/violin-adventure/) ·
+[👨‍👩‍👧 Guía para familias](docs/PARENT_GUIDE.md) ·
+[🎓 Currículo](docs/CURRICULUM.md) ·
+[🏗️ Arquitectura](docs/ARCHITECTURE.md) ·
+[🔒 Privacidad](docs/PRIVACY.md) ·
+[🗺️ Roadmap](ROADMAP.md)
 
 ![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)
@@ -15,16 +29,14 @@
 ![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-5A0FC8?logo=pwa&logoColor=white)
 
-[**⬇️ Descargar**](https://github.com/vladimiracunadev-create/violin-adventure/releases/latest) · [**🌐 Landing / Web**](https://vladimiracunadev-create.github.io/violin-adventure/) · [**📖 Documentación**](docs/)
-
 </div>
 
-Multiplataforma para acompañar a una niña de 10 años en sus primeros pasos con el violín.
-La versión **1.3.0** comparte la misma base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.
+---
 
-> La aplicación complementa, pero no reemplaza, la observación de una profesora o profesor de violín. La postura, el tamaño del instrumento, la hombrera, la mentonera y la afinación de los dedos requieren revisión humana.
+> [!IMPORTANT]
+> La aplicación **complementa, pero no reemplaza**, la observación de una profesora o profesor de violín. La postura, el tamaño del instrumento, la hombrera, la mentonera y la afinación de los dedos requieren revisión humana.
 
-## Vistazo
+## 📸 Vistazo
 
 |  |  |  |
 | :---: | :---: | :---: |
@@ -35,7 +47,32 @@ La versión **1.3.0** comparte la misma base de código para web, Windows, Andro
 | ![Práctica](docs/screenshots/05-practica.png) | ![Panel familiar](docs/screenshots/06-familia.png) | ![Modo oscuro](docs/screenshots/dark-inicio.png) |
 | **Sesión de práctica** | **Panel familiar** | **Modo oscuro** |
 
-## Funcionalidades
+## ✅ Estado verificable
+
+| Superficie | Evidencia |
+|---|---|
+| 🎓 **Currículo** | **24 lecciones** en 6 mundos, numeración continua validada en CI · 6 ilustraciones SVG originales |
+| 🎯 **Afinación** | Detección por autocorrelación a ~22 Hz · calibración de La entre **432 y 446 Hz** · 10 notas con grabaciones reales de violín |
+| 🥁 **Pulso** | Metrónomo agendado sobre el reloj de audio: **0 ms de deriva** medidos en 78 clics a 120 BPM |
+| 🧪 **Pruebas** | **41 unitarias** + **7 E2E (Playwright)** en CI, más validadores de repositorio y dominio sin dependencias |
+| 📦 **Distribución** | **7 artefactos** por release (`.exe` · `.msi` · `.apk` · `.aab` · `.deb` · `.AppImage` · `.rpm` · `.dmg`) con `SHA256SUMS.txt` |
+| 💾 **Datos** | Esquema de progreso v3 con migración desde v1 y v2 · exportación e importación en JSON |
+| 🔒 **Privacidad** | Sin servidor, sin cuentas, sin analítica · el micrófono se analiza en memoria y **nunca se graba** · sin cámara ni ubicación |
+
+## 🗺️ La ruta de aprendizaje
+
+```mermaid
+flowchart LR
+    M1["🌱 Mundo 1<br/>Cuidado y postura"] --> M2["🎵 Mundo 2<br/>Arco y cuerdas"]
+    M2 --> M3["🥁 Mundo 3<br/>Pizzicato y ritmo"]
+    M3 --> M4["✋ Mundo 4<br/>Mano izquierda"]
+    M4 --> M5["🎼 Mundo 5<br/>Re mayor y lectura"]
+    M5 --> M6["🎻 Mundo 6<br/>Repertorio"]
+```
+
+Cada lección incluye objetivo, habilidades, pasos guiados, guía visual opcional, pregunta final y recompensa. El panel familiar registra minutos, racha, insignias e historial.
+
+## ✨ Funcionalidades
 
 - **24 lecciones** organizadas en seis mundos progresivos.
 - Cuidado, postura, arco, cuerdas, pizzicato, ritmo, mano izquierda, escala de Re mayor, lectura inicial y repertorio.
@@ -65,7 +102,7 @@ La versión **1.3.0** comparte la misma base de código para web, Windows, Andro
 > Se resolverá configurando la clave de firma permanente ([cómo](docs/BUILD_MOBILE.md#configurar-la-clave-permanente)).
 > En Windows no ocurre: el instalador reemplaza la versión anterior y conserva el progreso.
 
-## Descargar e instalar
+## ⬇️ Descargar e instalar
 
 Los instaladores se generan automáticamente en GitHub Actions y se publican en la
 página de **[Releases](https://github.com/vladimiracunadev-create/violin-adventure/releases)**.
@@ -82,7 +119,7 @@ página de **[Releases](https://github.com/vladimiracunadev-create/violin-advent
 > **actualizar** la app sobre una instalación previa, configura un keystore
 > persistente como se explica en [docs/BUILD_MOBILE.md](docs/BUILD_MOBILE.md).
 
-## Arquitectura
+## 🏗️ Arquitectura
 
 ```text
 React + TypeScript + Vite
@@ -98,7 +135,7 @@ React + TypeScript + Vite
 
 El micrófono se solicita solo al activar el afinador. El audio se analiza en memoria con Web Audio, no se graba y no se envía a ningún servidor.
 
-## Ejecutar en navegador
+## 🚀 Ejecutar en navegador
 
 Requisitos:
 
@@ -114,7 +151,7 @@ pnpm dev
 
 Abre `http://localhost:1420`.
 
-## Verificar
+## 🧪 Verificar
 
 Las verificaciones puras pueden ejecutarse antes de instalar dependencias:
 
@@ -140,7 +177,7 @@ O todo junto:
 pnpm check
 ```
 
-## Windows
+## 🪟 Windows
 
 Instala Rust, Microsoft C++ Build Tools y WebView2. Luego:
 
@@ -152,7 +189,7 @@ pnpm desktop:build
 
 Los instaladores se generan bajo `src-tauri/target/release/bundle/`. Consulta [docs/BUILD_WINDOWS.md](docs/BUILD_WINDOWS.md).
 
-## Linux y macOS
+## 🐧 Linux y macOS
 
 Con Rust y las dependencias del sistema instaladas (en Linux: `libwebkit2gtk-4.1-dev`, `librsvg2-dev`, `patchelf`, `libgtk-3-dev`):
 
@@ -166,7 +203,7 @@ universal (Intel + Apple Silicon): `pnpm tauri build --target universal-apple-da
 En la práctica basta con etiquetar la versión (`v1.3.0`) y dejar que GitHub Actions los compile.
 Las pruebas E2E se ejecutan con `pnpm test:e2e` (Playwright).
 
-## Android e iOS
+## 📱 Android e iOS
 
 ```bash
 pnpm android:init
@@ -182,7 +219,7 @@ pnpm ios:build
 
 La compilación iOS exige macOS y Xcode. Los scripts configuran permisos de micrófono después de inicializar los proyectos móviles. Consulta [docs/BUILD_MOBILE.md](docs/BUILD_MOBILE.md).
 
-## Persistencia y privacidad
+## 🔒 Persistencia y privacidad
 
 El progreso utiliza un esquema local versionado:
 
@@ -195,7 +232,7 @@ El progreso utiliza un esquema local versionado:
 
 El PIN solo evita cambios accidentales. No sustituye la protección del sistema operativo ni pretende resistir a una persona con acceso completo al dispositivo.
 
-## Estructura
+## 📁 Estructura
 
 ```text
 violin-adventure/
@@ -213,7 +250,7 @@ violin-adventure/
 └── .github/workflows/       # Ejecución manual para controlar minutos
 ```
 
-## Documentación
+## 📚 Documentación
 
 - [Arquitectura](docs/ARCHITECTURE.md)
 - [Currículo completo](docs/CURRICULUM.md)
@@ -230,12 +267,12 @@ violin-adventure/
 - [Hoja de ruta](ROADMAP.md)
 - [Historial de cambios](CHANGELOG.md)
 
-## Estado real
+## 🎯 Estado real
 
 **1.3.0 — requisitos del dispositivo visibles y gestionables.**
 
 La aplicación contiene una experiencia funcional, una arquitectura preparada para distribución y compilación automática de instaladores para Windows, Android, Linux y macOS mediante GitHub Actions. Aunque técnicamente es una versión estable y publicable, todavía no se considera un método pedagógico validado ni un producto aprobado para las tiendas oficiales hasta completar revisión docente, pruebas con familias, auditoría de accesibilidad, ensayos acústicos e instalación en dispositivos reales.
 
-## Licencia
+## ⚖️ Licencia
 
 Código, currículo, iconos e ilustraciones propias bajo licencia MIT. Antes de agregar partituras, fotografías, grabaciones o repertorio, confirma su dominio público o licencia de uso y regístralo en [docs/CONTENT_LICENSES.md](docs/CONTENT_LICENSES.md).
