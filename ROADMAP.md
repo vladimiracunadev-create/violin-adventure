@@ -10,6 +10,9 @@
   de para qué se usa.
 - **Panel «Requisitos y permisos»** en Familia e interruptor propio de micrófono.
 - Sin permisos nuevos: se mantiene sin cámara ni ubicación.
+- **Keystore de Android persistente**: las actualizaciones se instalan sobre la
+  versión anterior sin borrar el progreso. Hasta la 1.2.1 cada release se firmaba
+  con una clave distinta y obligaba a desinstalar.
 
 ### 1.2.1 — Exactitud del pulso
 
@@ -69,6 +72,6 @@
 ### Distribución en tiendas
 
 - Auditoría de accesibilidad y privacidad infantil.
-- Keystore de Android persistente y actualización firmada de escritorio (updater Tauri).
+- Actualización firmada de escritorio (updater Tauri).
 - Compilación de iOS con cuenta Apple Developer.
 - Publicación en Microsoft Store, Google Play y App Store.

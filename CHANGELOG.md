@@ -19,6 +19,18 @@
   y «Tocar conmigo» quedan desactivados con un aviso claro y no se vuelve a pedir
   permiso al sistema.
 
+### Distribución
+
+- **Firma de Android permanente.** Hasta la 1.2.1, cada compilación generaba una
+  clave de firma nueva y la descartaba, así que Android veía cada versión como
+  obra de un autor distinto y rechazaba instalarla sobre la anterior: había que
+  desinstalar, y desinstalar borra el progreso guardado en el dispositivo. Con un
+  keystore persistente en los secrets del repositorio, todas las versiones se
+  firman con la misma clave y las actualizaciones se instalan encima sin perder
+  racha, insignias ni historial. Quien tenga la 1.2.0 o la 1.2.1 necesita una
+  última reinstalación; conviene exportar el respaldo desde el panel Familia
+  antes. El porqué queda explicado en [docs/BUILD_MOBILE.md](docs/BUILD_MOBILE.md).
+
 ### Nota sobre privacidad
 
 No se añadió ningún permiso nuevo. La aplicación sigue **sin usar cámara ni

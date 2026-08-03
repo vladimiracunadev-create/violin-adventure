@@ -23,6 +23,22 @@
 - [ ] Archivos exportados revisados para evitar datos innecesarios.
 - [ ] Proceso de reporte y corrección de vulnerabilidades.
 
+## Artefactos publicados
+
+Un flujo en verde **no** prueba que el artefacto sirva. Comprobar sobre el
+archivo descargado, no sobre el registro de la compilación:
+
+- [ ] Cada enlace de descarga de la landing resuelve (no 404) y el nombre del
+      archivo coincide con el publicado en la release.
+- [ ] Checksum del archivo descargado igual al de `SHA256SUMS.txt`.
+- [ ] El instalador **contiene la aplicación**: abrir el `.exe`/`.apk` y
+      comprobar que dentro están el `index.html`, el bundle JS, las diez notas de
+      violín y las ilustraciones. Un instalador que compila pero se instala vacío
+      pasa todas las comprobaciones anteriores.
+- [ ] Huella SHA-256 del certificado del APK **idéntica a la release anterior**
+      (ver [BUILD_MOBILE.md](BUILD_MOBILE.md)). Si cambió, la actualización
+      fallará en los dispositivos y se perderá el progreso.
+
 ## Distribución
 
 - [ ] Identificadores definitivos y derechos del nombre.

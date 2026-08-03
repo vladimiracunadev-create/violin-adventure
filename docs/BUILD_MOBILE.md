@@ -7,11 +7,39 @@
 
 ## Firma de Android en CI
 
-El flujo `release.yml` firma el APK automáticamente. Tiene dos modos:
+### Para qué sirve la clave de firma
 
-- **Sin secrets:** genera un keystore efímero por compilación. El APK es instalable,
-  pero **no** permite actualizar sobre una instalación previa (cambia la firma) ni
-  publicar en Google Play. Sirve para probar la primera versión.
+Android exige que toda aplicación esté firmada. La firma no cifra ni protege el
+contenido: sirve para responder a una única pregunta cuando llega una
+actualización.
+
+> ¿Esta versión nueva viene de quien hizo la que ya está instalada?
+
+Android compara la firma de la versión instalada con la de la nueva. Si
+coinciden, la reemplaza **conservando los datos locales**. Si no coinciden, se
+niega a instalarla: asume que alguien intenta suplantar la aplicación. Es como el
+sello de una carta — no oculta nada, solo acredita quién la envía.
+
+El *keystore* es el archivo que contiene esa clave, protegido con una contraseña.
+
+**Consecuencia práctica para esta aplicación:** el progreso de la niña (racha,
+insignias, lecciones completadas e historial de práctica) vive en el
+almacenamiento local del dispositivo. Si Android rechaza la actualización, hay
+que desinstalar, y desinstalar borra ese almacenamiento. Firmar siempre con la
+misma clave es lo que convierte una actualización en algo transparente en vez de
+una pérdida de datos.
+
+Por eso el keystore persistente no es un detalle de publicación: es lo que hace
+que actualizar la aplicación sea una experiencia normal.
+
+### Los dos modos del flujo
+
+El flujo `release.yml` firma el APK automáticamente:
+
+- **Sin secrets:** genera un keystore efímero por compilación y lo descarta al
+  terminar. Cada versión queda firmada con una clave distinta, así que **ninguna
+  puede instalarse sobre otra** ni publicarse en Google Play. Solo sirve para
+  probar una primera versión suelta. El flujo emite un aviso cuando ocurre.
 - **Con keystore persistente (recomendado):** define estos secrets del repositorio
   (`Ajustes > Secrets and variables > Actions`) para firmar siempre con la misma clave:
 
@@ -54,6 +82,26 @@ keytool -printcert -jarfile MiAventuraConElViolin-<version>.apk
 Si la línea `SHA256:` cambia entre dos versiones, la actualización en el
 dispositivo fallará y habrá que desinstalar primero (perdiendo el progreso
 guardado, salvo que se exporte antes desde el panel Familia).
+
+Esta es la comprobación que confirma que el keystore persistente quedó bien
+configurado: **la huella debe ser idéntica en dos releases consecutivas**. Que el
+workflow termine en verde no lo demuestra — con keystore efímero también termina
+en verde, y firma cada versión con una clave distinta.
+
+### Historial de firmas
+
+Las versiones 1.2.0 y 1.2.1 se publicaron antes de configurar el keystore
+persistente, cada una con una clave efímera irrecuperable:
+
+| Versión | Huella SHA-256 del certificado |
+| --- | --- |
+| 1.2.0 | `6C:1F:75:67:C7:88:8F:B2…` (efímera, perdida) |
+| 1.2.1 | `43:3D:B8:AB:E4:A9:93:4A…` (efímera, perdida) |
+
+Quien tenga instalada cualquiera de esas versiones necesita **una desinstalación
+más** para pasar a la primera versión firmada con la clave permanente. Conviene
+exportar el respaldo desde el panel Familia antes de hacerlo, e importarlo
+después. A partir de ahí, las actualizaciones se instalan encima sin pérdida.
 
 ## Android
 
