@@ -2,7 +2,15 @@
 
 ## Publicado
 
-### 1.2 — Práctica y experiencia (actual)
+### 1.2.1 — Exactitud del pulso (actual)
+
+- **Metrónomo sin deriva**: los clics se agendan sobre el reloj de `AudioContext`
+  con anticipación, en lugar de dispararse desde `setInterval`. El pulso se
+  mantiene exacto aunque el temporizador llegue tarde o la animación se detenga.
+- **Detección de tono a ~22 Hz** en vez de en cada frame: un tercio del trabajo
+  de CPU en el afinador y en «Tocar conmigo», sin cambio perceptible.
+
+### 1.2 — Práctica y experiencia
 
 - **Modo oscuro** con selección Sistema / Claro / Oscuro y respeto de `prefers-reduced-motion`.
 - **Canciones**: tres melodías de dominio público tocadas con violín real, con modo

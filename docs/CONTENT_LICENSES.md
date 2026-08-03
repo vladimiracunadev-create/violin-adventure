@@ -32,7 +32,7 @@ Antes de agregar una partitura, fotografía, tipografía, grabación o video:
 5. Evita recursos con licencias incompatibles con la distribución prevista.
 6. Incluye atribuciones visibles cuando la licencia lo exija.
 
-En la versión 1.2.0 no se incluyen grabaciones comerciales ni partituras de terceros. El único
+En la versión 1.2.1 no se incluyen grabaciones comerciales ni partituras de terceros. El único
 audio de terceros son las diez notas de violín bajo CC BY 3.0 registradas y atribuidas arriba.
 Las melodías de la sección Canciones (Estrellita, Himno a la alegría, Mary tenía un corderito)
 son de dominio público; se reproducen con esas mismas notas de violín.

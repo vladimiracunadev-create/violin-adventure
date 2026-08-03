@@ -151,19 +151,28 @@ export async function playReferenceTone(frequency: number, seconds = 1.4): Promi
   });
 }
 
-export async function playClick(accent = false): Promise<void> {
-  const context = await ensureAudioReady();
+/**
+ * Agenda un clic en un instante exacto del reloj de audio. Es síncrona a
+ * propósito: el metrónomo la llama desde su planificador y esperar una promesa
+ * introduciría justo el jitter que se quiere evitar.
+ */
+export function scheduleClick(context: AudioContext, when: number, accent = false): void {
+  const time = Math.max(when, context.currentTime);
   const oscillator = context.createOscillator();
   const gain = context.createGain();
-  const now = context.currentTime;
 
   oscillator.frequency.value = accent ? 1150 : 850;
   oscillator.type = "square";
-  gain.gain.setValueAtTime(0.14, now);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+  gain.gain.setValueAtTime(0.14, time);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.055);
   oscillator.connect(gain).connect(context.destination);
-  oscillator.start(now);
-  oscillator.stop(now + 0.06);
+  oscillator.start(time);
+  oscillator.stop(time + 0.06);
+}
+
+export async function playClick(accent = false): Promise<void> {
+  const context = await ensureAudioReady();
+  scheduleClick(context, context.currentTime, accent);
 }
 
 export function speakInstruction(text: string): boolean {

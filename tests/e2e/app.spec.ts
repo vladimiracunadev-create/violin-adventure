@@ -1,9 +1,9 @@
 import { test, expect, type Page } from "@playwright/test";
 
 // Semilla mínima para saltar la bienvenida y activar el sonido.
-// Bloquea el service worker para que su recarga no aborte la navegación.
+// El service worker se bloquea en playwright.config.ts (`serviceWorkers`), no
+// aquí: `page.route` no llega a interceptar la petición de `/sw.js`.
 async function seed(page: Page, extra: Record<string, unknown> = {}) {
-  await page.route("**/sw.js", (route) => route.abort());
   await page.addInitScript((data) => {
     localStorage.setItem("violin-adventure-progress-v3", JSON.stringify(data));
   }, { schemaVersion: 3, onboardingCompleted: true, childName: "Test", soundEnabled: true, ...extra });
@@ -46,6 +46,40 @@ test("reproduce una canción con muestras reales de violín", async ({ page }) =
   await expect(page.getByRole("button", { name: /Detener/ })).toBeVisible();
   await audioResponse;
   await expect(page.locator(".song-note.active")).toHaveCount(1);
+});
+
+test("el metrónomo recorre el compás siguiendo el reloj de audio", async ({ page }) => {
+  // El reloj de audio headless puede ir más lento que el tiempo real.
+  test.setTimeout(60_000);
+  await seed(page);
+  await page.goto("/?screen=rhythm");
+  await page.getByRole("button", { name: "120", exact: true }).click();
+  await page.getByRole("button", { name: "Comenzar" }).click();
+
+  const disc = page.locator(".pulse-disc");
+  await expect(disc).toHaveClass(/active/, { timeout: 15_000 });
+
+  // Se comprueba que el compás recorre sus cuatro pulsos, no cuánto tarda: el
+  // reloj de AudioContext no avanza en tiempo real sin dispositivo de audio, y
+  // la exactitud de la rejilla ya se verifica en las pruebas de metronome.ts.
+  // El disco se remonta en cada pulso (lleva `key`), así que hay que volver a
+  // consultarlo en cada muestra: una referencia guardada queda desprendida.
+  const observed = await page.evaluate(() => new Promise<string[]>((resolve) => {
+    const seen = new Set<string>();
+    const startedAt = Date.now();
+    const sampler = setInterval(() => {
+      const text = document.querySelector(".pulse-disc")?.textContent?.trim();
+      if (text && text !== "♪") seen.add(text);
+      if (seen.size >= 4 || Date.now() - startedAt > 18_000) {
+        clearInterval(sampler);
+        resolve([...seen]);
+      }
+    }, 30);
+  }));
+
+  expect(observed.sort()).toEqual(["1", "2", "3", "4"]);
+  await page.getByRole("button", { name: "Pausar" }).click();
+  await expect(disc).not.toHaveClass(/active/);
 });
 
 test("el tema oscuro forzado aplica data-theme", async ({ page }) => {

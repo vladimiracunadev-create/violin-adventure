@@ -16,6 +16,7 @@ Interfaz React
 Dominio TypeScript
 ├── curriculum.ts
 ├── pitch.ts y audio.ts
+├── metronome.ts
 ├── storage.ts y practiceTimer.ts
 ├── familyPin.ts
 └── achievements.ts
@@ -38,7 +39,7 @@ El contenido no está mezclado con la lógica del afinador ni con la persistenci
 
 ### Referencias
 
-Web Audio genera tonos con varios armónicos. Son referencias sintéticas, no una imitación fiel del timbre de un violín.
+Las notas de referencia usan grabaciones reales de violín (soundfont FluidR3_GM, CC BY 3.0). De cada muestra se guarda su frecuencia medida y se corrige con `playbackRate` a la altura exacta pedida, de modo que la calibración de 432 a 446 Hz se respeta sin volver a grabar. Cuando no existe muestra para esa altura se recurre a un tono sintetizado con varios armónicos, que no imita fielmente el timbre de un violín.
 
 ### Afinación
 
@@ -48,7 +49,18 @@ Web Audio genera tonos con varios armónicos. Son referencias sintéticas, no un
 4. La frecuencia se convierte a MIDI relativo a la calibración elegida.
 5. La interfaz presenta nota, frecuencia, cents e historial.
 
-La versión actual ejecuta el análisis en el hilo principal. `AudioWorklet` queda pendiente para mejorar estabilidad en dispositivos lentos.
+El análisis se ejecuta en el hilo principal, pero limitado a ~22 Hz (una detección cada 45 ms) en lugar de una por frame: la autocorrelación sobre 4096 muestras supera el millón de operaciones y a 60 Hz saturaba el hilo visual y la batería. `AudioWorklet` sigue pendiente para sacarlo del todo del hilo de la interfaz.
+
+### Metrónomo
+
+El pulso no se marca con `setInterval`: ese temporizador acumula deriva y el navegador lo estrangula cuando la pantalla se atenúa o la aplicación pasa a segundo plano.
+
+1. Un temporizador despierta al planificador cada 25 ms.
+2. El planificador agenda por adelantado todos los clics que caen dentro de los siguientes 120 ms, calculando cada instante sobre `AudioContext.currentTime`.
+3. Web Audio reproduce cada clic en su instante exacto, con precisión de muestra.
+4. La animación consume aparte los clics ya sonados, de modo que un frame perdido no descoloca el audio.
+
+`metronome.ts` no depende del navegador: recibe el reloj y la función de agendado, así que la rejilla se verifica en pruebas contra un reloj simulado con jitter. Cambiar el tempo conserva la posición dentro del compás; cambiar la métrica lo reinicia.
 
 ### Desafío de nota
 

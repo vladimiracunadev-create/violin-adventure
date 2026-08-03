@@ -1,6 +1,6 @@
 [package]
 name = "violin-adventure"
-version = "1.2.0"
+version = "1.2.1"
 description = "Aplicación educativa para aprender violín"
 authors = ["Vladimir Acuña"]
 edition = "2021"

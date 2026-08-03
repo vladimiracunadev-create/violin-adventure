@@ -20,7 +20,7 @@
 </div>
 
 Multiplataforma para acompañar a una niña de 10 años en sus primeros pasos con el violín.
-La versión **1.2.0** comparte la misma base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.
+La versión **1.2.1** comparte la misma base de código para web, Windows, Android, iOS, Linux y macOS mediante Tauri 2.
 
 > La aplicación complementa, pero no reemplaza, la observación de una profesora o profesor de violín. La postura, el tamaño del instrumento, la hombrera, la mentonera y la afinación de los dedos requieren revisión humana.
 
@@ -47,7 +47,7 @@ La versión **1.2.0** comparte la misma base de código para web, Windows, Andro
 - Calibración de La entre 432 y 446 Hz, referencias e historial de estabilidad.
 - Desafío auditivo y **modo drone** (sostener la nota) que comprueban localmente una nota.
 - **Canciones para tocar** con violín real y modo «Tocar conmigo» que verifica cada nota con el micrófono.
-- Metrónomo de 40 a 160 BPM, compases de 2, 3 y 4 pulsos, corcheas, **tap-tempo** y **modo visual**.
+- Metrónomo de 40 a 160 BPM con **pulso exacto** (agendado sobre el reloj de audio, sin deriva), compases de 2, 3 y 4 pulsos, corcheas, **tap-tempo** y **modo visual**.
 - **Modo oscuro** (Sistema / Claro / Oscuro) y respeto de movimiento reducido.
 - **Gráfico de minutos por semana** en el panel familiar.
 - Temporizador recuperable de 5, 10, 15 o 20 minutos.
@@ -155,7 +155,7 @@ pnpm desktop:build
 
 En Linux se generan `.deb`, `.AppImage` y `.rpm`; en macOS un `.dmg`. Para un `.dmg`
 universal (Intel + Apple Silicon): `pnpm tauri build --target universal-apple-darwin`.
-En la práctica basta con etiquetar la versión (`v1.2.0`) y dejar que GitHub Actions los compile.
+En la práctica basta con etiquetar la versión (`v1.2.1`) y dejar que GitHub Actions los compile.
 Las pruebas E2E se ejecutan con `pnpm test:e2e` (Playwright).
 
 ## Android e iOS
@@ -224,7 +224,7 @@ violin-adventure/
 
 ## Estado real
 
-**1.2.0 — audio real, canciones, modo oscuro y más práctica.**
+**1.2.1 — metrónomo exacto y detección de tono más liviana.**
 
 La aplicación contiene una experiencia funcional, una arquitectura preparada para distribución y compilación automática de instaladores para Windows, Android, Linux y macOS mediante GitHub Actions. Aunque técnicamente es una versión estable y publicable, todavía no se considera un método pedagógico validado ni un producto aprobado para las tiendas oficiales hasta completar revisión docente, pruebas con familias, auditoría de accesibilidad, ensayos acústicos e instalación en dispositivos reales.
 

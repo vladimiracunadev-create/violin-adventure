@@ -4,8 +4,9 @@ import { OnboardingDialog } from "./components/OnboardingDialog";
 import { PwaNotices } from "./components/PwaNotices";
 import { lessons, worlds } from "./data/curriculum";
 import { songs, NOTE_LABEL, type Song } from "./data/songs";
-import { playClick, playViolinTone, preloadViolinStrings, speakInstruction, startDrone, stopDrone } from "./lib/audio";
+import { ensureAudioReady, playClick, playViolinTone, preloadViolinStrings, scheduleClick, speakInstruction, startDrone, stopDrone } from "./lib/audio";
 import { getAchievements, type Achievement } from "./lib/achievements";
+import { MetronomeScheduler, type Subdivision } from "./lib/metronome";
 import { createFamilyPin, isValidFamilyPin, verifyFamilyPin } from "./lib/familyPin";
 import { useModalA11y } from "./hooks/useModalA11y";
 import {
@@ -15,6 +16,7 @@ import {
   getViolinStrings,
   nearestChromaticNote,
   nearestViolinString,
+  PITCH_ANALYSIS_INTERVAL_MS,
   type PitchResult
 } from "./lib/pitch";
 import {
@@ -430,15 +432,19 @@ function Tuner({ soundEnabled, calibration, onCalibrationChange, onChallengeComp
       setListening(true);
       setMessage("Escuchando… evita hablar mientras sostienes la nota.");
       const buffer = new Float32Array(analyser.fftSize);
-      const detect = () => {
+      let lastAnalysis = Number.NEGATIVE_INFINITY;
+      const detect = (timestamp: number) => {
+        frameRef.current = requestAnimationFrame(detect);
+        if (timestamp - lastAnalysis < PITCH_ANALYSIS_INTERVAL_MS) return;
+        lastAnalysis = timestamp;
         analyser.getFloatTimeDomainData(buffer);
         const frequency = autoCorrelate(buffer, context.sampleRate);
         if (frequency) {
           const result = modeRef.current === "strings" ? nearestViolinString(frequency, calibrationRef.current) : nearestChromaticNote(frequency, calibrationRef.current);
           setPitch(result);
           frameCounterRef.current += 1;
-          if (frameCounterRef.current % 4 === 0) setHistory((current) => [...current.slice(-39), Math.max(-50, Math.min(50, result.cents))]);
-          if (frameCounterRef.current % 3 === 0 && challengeActiveRef.current && !challengeCompletedRef.current) {
+          if (frameCounterRef.current % 2 === 0) setHistory((current) => [...current.slice(-39), Math.max(-50, Math.min(50, result.cents))]);
+          if (challengeActiveRef.current && !challengeCompletedRef.current) {
             if (result.midi === targetMidiRef.current && Math.abs(result.cents) <= 15) {
               setStableFrames((current) => {
                 const next = Math.min(30, current + 1);
@@ -456,9 +462,8 @@ function Tuner({ soundEnabled, calibration, onCalibrationChange, onChallengeComp
             }
           }
         }
-        frameRef.current = requestAnimationFrame(detect);
       };
-      detect();
+      frameRef.current = requestAnimationFrame(detect);
     } catch {
       setMessage("No se pudo abrir el micrófono. Revisa el permiso de la aplicación o del navegador.");
     }
@@ -507,26 +512,62 @@ function Tuner({ soundEnabled, calibration, onCalibrationChange, onChallengeComp
 function Metronome({ soundEnabled, readingCorrect, readingAttempts, onReadingAttempt }: { soundEnabled: boolean; readingCorrect: number; readingAttempts: number; onReadingAttempt: (correct: boolean) => void }) {
   const [bpm, setBpm] = useState(72);
   const [beats, setBeats] = useState(4);
-  const [subdivision, setSubdivision] = useState<1 | 2>(1);
+  const [subdivision, setSubdivision] = useState<Subdivision>(1);
   const [running, setRunning] = useState(false);
   const [currentBeat, setCurrentBeat] = useState(0);
   const [visualOnly, setVisualOnly] = useState(false);
   const tapsRef = useRef<number[]>([]);
+  const schedulerRef = useRef<MetronomeScheduler | null>(null);
+
+  const settings = useMemo(() => ({ bpm, beats, subdivision }), [bpm, beats, subdivision]);
+  const settingsRef = useRef(settings);
+  const audible = soundEnabled && !visualOnly;
+  const audibleRef = useRef(audible);
+
+  // El tempo cambia en caliente: el planificador ya está corriendo y solo hay
+  // que avisarle, sin reiniciar el pulso.
+  useEffect(() => {
+    settingsRef.current = settings;
+    schedulerRef.current?.update(settings);
+  }, [settings]);
+  useEffect(() => { audibleRef.current = audible; }, [audible]);
 
   useEffect(() => {
     if (!running) { setCurrentBeat(0); return; }
-    const milliseconds = 60_000 / bpm / subdivision;
-    let tickIndex = 0;
-    const tick = () => {
-      tickIndex += 1;
-      const beat = Math.floor((tickIndex - 1) / subdivision) % beats + 1;
-      setCurrentBeat(beat);
-      if (soundEnabled && !visualOnly) void playClick(beat === 1 && (tickIndex - 1) % subdivision === 0);
+    let cancelled = false;
+    let frame: number | null = null;
+    let scheduler: MetronomeScheduler | null = null;
+
+    void (async () => {
+      const context = await ensureAudioReady();
+      if (cancelled) return;
+      scheduler = new MetronomeScheduler(
+        {
+          now: () => context.currentTime,
+          scheduleTick: (tick) => { if (audibleRef.current) scheduleClick(context, tick.time, tick.accent); }
+        },
+        settingsRef.current
+      );
+      schedulerRef.current = scheduler;
+      scheduler.start();
+
+      // La animación va por su cuenta: consume los clics ya sonados en lugar de
+      // marcar el pulso, para que un frame perdido no descoloque el audio.
+      const follow = () => {
+        const due = scheduler?.drainDue() ?? [];
+        if (due.length > 0) setCurrentBeat(due[due.length - 1].beat);
+        frame = requestAnimationFrame(follow);
+      };
+      frame = requestAnimationFrame(follow);
+    })();
+
+    return () => {
+      cancelled = true;
+      if (frame !== null) cancelAnimationFrame(frame);
+      scheduler?.stop();
+      schedulerRef.current = null;
     };
-    tick();
-    const interval = window.setInterval(tick, milliseconds);
-    return () => window.clearInterval(interval);
-  }, [running, bpm, beats, subdivision, soundEnabled, visualOnly]);
+  }, [running]);
 
   function tapTempo() {
     const now = performance.now();
@@ -753,15 +794,21 @@ function Songs({ soundEnabled, calibration, songsCompleted, onSongComplete }: {
       setMessage(`Toca ${NOTE_LABEL[song.notes[0].midi]} para empezar.`);
       const buffer = new Float32Array(analyser.fftSize);
       let current = 0; let stable = 0;
-      const detect = () => {
+      let lastAnalysis = Number.NEGATIVE_INFINITY;
+      const detect = (timestamp: number) => {
         if (abortRef.current) return;
+        frameRef.current = requestAnimationFrame(detect);
+        if (timestamp - lastAnalysis < PITCH_ANALYSIS_INTERVAL_MS) return;
+        lastAnalysis = timestamp;
         analyser.getFloatTimeDomainData(buffer);
         const frequency = autoCorrelate(buffer, context.sampleRate);
         if (frequency) {
           const result = nearestChromaticNote(frequency, calibrationRef.current);
           if (result.midi === song.notes[current].midi && Math.abs(result.cents) <= 38) {
             stable += 1;
-            if (stable >= 6) {
+            // Tres análisis seguidos ≈ 135 ms de nota sostenida, el equivalente
+            // a los seis frames que se exigían antes de limitar la tasa.
+            if (stable >= 3) {
               current += 1; stable = 0;
               if (current >= song.notes.length) {
                 setIndex(-1); setDone(true); setMode("idle");
@@ -778,9 +825,8 @@ function Songs({ soundEnabled, calibration, songsCompleted, onSongComplete }: {
             stable = Math.max(0, stable - 1);
           }
         }
-        frameRef.current = requestAnimationFrame(detect);
       };
-      detect();
+      frameRef.current = requestAnimationFrame(detect);
     } catch {
       setMode("idle");
       setMessage("No se pudo abrir el micrófono. Revisa el permiso de la aplicación o del navegador.");

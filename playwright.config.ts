@@ -10,7 +10,12 @@ export default defineConfig({
   reporter: process.env.CI ? "line" : "list",
   use: {
     baseURL: "http://localhost:1420",
-    trace: "on-first-retry"
+    trace: "on-first-retry",
+    // El service worker recarga la página al tomar el control
+    // (`controllerchange` en src/lib/pwa.ts), lo que borra el estado de React en
+    // mitad de una prueba. Interceptar `/sw.js` con `page.route` no sirve: esa
+    // petición la hace el contexto, no la página. Hay que bloquearlo aquí.
+    serviceWorkers: "block"
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } }

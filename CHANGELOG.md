@@ -1,5 +1,44 @@
 # Historial de cambios
 
+## 1.2.1 — 2026-08-03
+
+### Corregido
+
+- **El metrónomo ya no se desvía.** Marcaba el pulso con `setInterval`, que
+  acumula deriva y el navegador estrangula cuando la pantalla se atenúa o la
+  aplicación pasa a segundo plano: el pulso se volvía irregular justo donde la
+  exactitud importa. Ahora un planificador con anticipación agenda cada clic
+  sobre el reloj de `AudioContext`, exacto a nivel de muestra. Medido en el
+  navegador a 120 BPM: 78 clics con 500,000 ms de separación y **0 ms de deriva
+  acumulada**, incluso con la animación completamente detenida.
+- El cambio de tempo se aplica en caliente sin reiniciar el compás; cambiar la
+  métrica (pulsos o subdivisión) sí lo reinicia, como corresponde.
+
+### Cambiado
+
+- **La detección de tono ya no corre en cada frame.** La autocorrelación sobre
+  4096 muestras supera el millón de operaciones, así que ejecutarla a 60 Hz
+  saturaba el hilo visual y la batería del móvil. Pasa a ~22 Hz (una cada 45 ms),
+  un tercio del trabajo, sin cambio perceptible en el afinador ni en el modo
+  «Tocar conmigo». Los umbrales de estabilidad se reajustaron para conservar los
+  mismos tiempos de reacción.
+- La animación del metrónomo consume los clics ya sonados en lugar de marcar el
+  pulso, de modo que un frame perdido no descoloca el audio.
+
+- **Las pruebas E2E ya no compiten contra una recarga del service worker.** Al
+  tomar el control, el worker dispara `controllerchange` y recarga la página,
+  borrando el estado de React en mitad de una prueba. El bloqueo que había
+  (`page.route` sobre `/sw.js`) no llegaba a aplicarse, porque esa petición la
+  hace el contexto del navegador y no la página; ahora se bloquea desde la
+  configuración de Playwright. La suite pasa de tardar entre 8 y 20 s, con
+  fallos intermitentes, a unos 6 s estables.
+
+### Añadido
+
+- Suite de pruebas del planificador del metrónomo (rejilla exacta bajo un
+  temporizador con jitter, cambio de tempo, reinicio de compás) y prueba E2E que
+  verifica que el compás avanza en un navegador real.
+
 ## 1.2.0 — 2026-07-27
 
 ### Añadido

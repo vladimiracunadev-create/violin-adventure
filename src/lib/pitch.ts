@@ -90,6 +90,15 @@ export function nearestViolinString(frequency: number, referenceA = 440): Violin
   };
 }
 
+/**
+ * Separación mínima entre análisis, en milisegundos (~22 Hz). La
+ * autocorrelación sobre 4096 muestras cuesta más de un millón de operaciones,
+ * así que ejecutarla en cada frame satura el hilo visual y la batería del
+ * móvil. A 22 Hz el afinador sigue viéndose continuo y el trabajo baja a un
+ * tercio.
+ */
+export const PITCH_ANALYSIS_INTERVAL_MS = 45;
+
 export function autoCorrelate(buffer: Float32Array, sampleRate: number): number | null {
   const length = Math.min(buffer.length, 4096);
   if (length < 256) return null;
