@@ -111,6 +111,7 @@
   .dl .links{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px}
   .dl .links a{font-size:.82rem; font-weight:800; text-decoration:none; padding:8px 12px; border-radius:10px; background:var(--purple-soft); color:var(--purple-dark)}
   .dl .links a:hover{background:var(--purple); color:#fff}
+  .dl .untested{margin-top:10px; font-size:.74rem; font-weight:800; line-height:1.35; color:var(--muted); border-top:1px dashed var(--line); padding-top:8px}
   .note{text-align:center; color:var(--muted); margin-top:26px; font-size:.92rem}
 
   /* PRIVACY */
@@ -216,7 +217,7 @@
     <div class="section-head">
       <span class="eyebrow">Versión 1.2.1</span>
       <h2>Descarga para tu dispositivo</h2>
-      <p>Instaladores oficiales generados automáticamente. Elige tu plataforma.</p>
+      <p>Instaladores generados automáticamente en cada versión. Windows y Android se prueban en dispositivos reales; Linux y macOS se compilan pero todavía nadie los ha ejecutado.</p>
     </div>
     <div class="dl-grid">
       <div class="dl">
@@ -239,12 +240,14 @@
           <a href="https://github.com/vladimiracunadev-create/violin-adventure/releases/latest/download/Mi.Aventura.con.el.Violin_1.2.1_amd64.deb">.deb</a>
           <a href="https://github.com/vladimiracunadev-create/violin-adventure/releases/latest/download/Mi.Aventura.con.el.Violin-1.2.1-1.x86_64.rpm">.rpm</a>
         </div>
+        <p class="untested">⚠️ Compilado automáticamente, sin probar en Linux.</p>
       </div>
       <div class="dl">
         <div class="os">🍎</div><h3>macOS</h3><small>10.15+ · universal</small>
         <div class="links">
           <a href="https://github.com/vladimiracunadev-create/violin-adventure/releases/latest/download/Mi.Aventura.con.el.Violin_1.2.1_universal.dmg">.dmg</a>
         </div>
+        <p class="untested">⚠️ Compilado automáticamente, sin probar en macOS.</p>
       </div>
     </div>
     <p class="note">📱 Android: la primera versión pide permitir "instalar apps desconocidas". · 🍎 macOS: al ser una app independiente, ábrela con clic derecho → Abrir la primera vez. · <a href="https://github.com/vladimiracunadev-create/violin-adventure/releases">Ver todas las versiones y archivos →</a></p>
