@@ -30,7 +30,30 @@ El flujo `release.yml` firma el APK automáticamente. Tiene dos modos:
   base64 -w0 release.jks   # copia el resultado en ANDROID_KEYSTORE_BASE64
   ```
 
+  En Windows (PowerShell), `base64` no existe y `keytool` suele venir con Android
+  Studio:
+
+  ```powershell
+  & "$env:LOCALAPPDATA\Programs\Android Studio\jbr\bin\keytool.exe" -genkeypair -v -keystore release.jks -alias violin -keyalg RSA -keysize 2048 -validity 10000
+  [Convert]::ToBase64String([IO.File]::ReadAllBytes("release.jks")) | Set-Clipboard
+  ```
+
   Guarda `release.jks` en un lugar seguro y **nunca** lo subas al repositorio.
+  Si se pierde, no hay forma de volver a firmar con esa clave: todas las
+  instalaciones existentes quedan sin ruta de actualización.
+
+### Comprobar con qué clave está firmado un APK
+
+Dos APK firmados con claves distintas no se pueden instalar uno sobre otro. Para
+comparar la huella del certificado:
+
+```bash
+keytool -printcert -jarfile MiAventuraConElViolin-1.2.1.apk
+```
+
+Si la línea `SHA256:` cambia entre dos versiones, la actualización en el
+dispositivo fallará y habrá que desinstalar primero (perdiendo el progreso
+guardado, salvo que se exporte antes desde el panel Familia).
 
 ## Android
 
