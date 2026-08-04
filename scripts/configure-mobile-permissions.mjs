@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const root = process.cwd();
@@ -16,6 +16,23 @@ if (existsSync(androidManifest)) {
   }
 } else {
   console.log("ℹ Android aún no está inicializado; ejecuta: pnpm android:init");
+}
+
+// `tauri android init` crea el proyecto con los iconos por defecto de Tauri y
+// no recoge los de `src-tauri/icons/android`, que es donde los deja
+// `tauri icon`. Sin esta copia la aplicación se publica con el logo genérico:
+// así ocurrió hasta la 1.3.0 incluida.
+const iconosAndroid = join(root, "src-tauri", "icons", "android");
+const resAndroid = join(root, "src-tauri", "gen", "android", "app", "src", "main", "res");
+
+if (existsSync(iconosAndroid) && existsSync(resAndroid)) {
+  cpSync(iconosAndroid, resAndroid, { recursive: true, force: true });
+  const densidades = readdirSync(iconosAndroid).filter((name) => name.startsWith("mipmap"));
+  console.log(`✓ Iconos de Android copiados al proyecto generado (${densidades.length} densidades)`);
+} else if (!existsSync(iconosAndroid)) {
+  console.log("⚠ Faltan los iconos de Android; genéralos con: pnpm tauri icon assets/icon-source.png");
+} else {
+  console.log("ℹ Android aún no está inicializado; los iconos se copiarán tras: pnpm android:init");
 }
 
 const appleRoot = join(root, "src-tauri", "gen", "apple");
