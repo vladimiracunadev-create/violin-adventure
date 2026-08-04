@@ -1,9 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#6d4aff"/>
-  <path d="M320 63c31 37 22 80-18 117l-28 25 33 38c28 33 23 83-11 110-29 23-69 21-96-4l-18 17-35-38 18-17c-23-31-19-75 10-102 31-28 78-27 107 3l28-25c27-24 35-51 15-76l-5-6z" fill="#ffbc5b"/>
-  <path d="M159 365l-39 36 25 28 40-36zm136-267 72-67 21 24-72 66z" fill="#f8f4ff"/>
-  <path d="M370 47l24-22 24 27-24 22z" fill="#ff6b8a"/>
-  <path d="M173 206c34 31 82 85 123 147" stroke="#4427b8" stroke-width="13" fill="none" stroke-linecap="round"/>
-  <circle cx="221" cy="266" r="12" fill="#4427b8"/>
-  <circle cx="260" cy="310" r="12" fill="#4427b8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Mi Aventura con el Violín">
+  <defs>
+    <linearGradient id="fondo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7658f7"/>
+      <stop offset="1" stop-color="#4e2fd3"/>
+    </linearGradient>
+    <linearGradient id="madera" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7c882"/>
+      <stop offset="1" stop-color="#e89b3c"/>
+    </linearGradient>
+    <!-- La caja se compone igual que en scripts/generate-icons.mjs: se unen los
+         dos bombos y el centro, y se restan dos círculos laterales para tallar
+         la cintura. Así el favicon y el icono de la app son el mismo dibujo. -->
+    <mask id="caja">
+      <ellipse cx="256" cy="376" rx="94" ry="64" fill="#fff"/>
+      <ellipse cx="256" cy="266" rx="78" ry="53" fill="#fff"/>
+      <rect x="186" y="266" width="140" height="110" fill="#fff"/>
+      <circle cx="140" cy="319" r="48" fill="#000"/>
+      <circle cx="372" cy="319" r="48" fill="#000"/>
+    </mask>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#fondo)"/>
+
+  <!-- Mástil, clavijas y voluta -->
+  <rect x="238" y="112" width="36" height="163" rx="17" fill="#965214"/>
+  <ellipse cx="237" cy="126" rx="11" ry="7" fill="#f7c882"/>
+  <ellipse cx="275" cy="126" rx="11" ry="7" fill="#f7c882"/>
+  <ellipse cx="237" cy="154" rx="11" ry="7" fill="#f7c882"/>
+  <ellipse cx="275" cy="154" rx="11" ry="7" fill="#f7c882"/>
+  <circle cx="256" cy="111" r="31" fill="#965214"/>
+  <circle cx="256" cy="111" r="19" fill="#f7c882"/>
+  <circle cx="256" cy="111" r="8" fill="#965214"/>
+
+  <!-- Caja de resonancia -->
+  <rect width="512" height="512" fill="url(#madera)" mask="url(#caja)"/>
+
+  <!-- Diapasón -->
+  <rect x="243" y="122" width="26" height="193" rx="12" fill="#34214a"/>
+
+  <!-- Oídos en f -->
+  <g fill="none" stroke="#965214" stroke-width="7" stroke-linecap="round">
+    <line x1="215" y1="303" x2="207" y2="372"/>
+    <line x1="297" y1="303" x2="305" y2="372"/>
+  </g>
+  <g fill="#965214">
+    <circle cx="215" cy="299" r="9"/>
+    <circle cx="207" cy="376" r="9"/>
+    <circle cx="297" cy="299" r="9"/>
+    <circle cx="305" cy="376" r="9"/>
+  </g>
+
+  <!-- Puente y cordal -->
+  <path d="M229 325h54l-7 16h-40z" fill="#965214"/>
+  <rect x="240" y="341" width="32" height="83" rx="9" fill="#34214a"/>
+
+  <!-- Cuerdas -->
+  <g stroke="#fff8eb" stroke-width="2.8" stroke-linecap="round">
+    <line x1="251" y1="112" x2="246" y2="331"/>
+    <line x1="254" y1="112" x2="253" y2="331"/>
+    <line x1="258" y1="112" x2="259" y2="331"/>
+    <line x1="261" y1="112" x2="266" y2="331"/>
+  </g>
 </svg>
